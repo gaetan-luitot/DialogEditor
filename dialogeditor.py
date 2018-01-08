@@ -17,4 +17,4 @@
 #
 # Ideas for the interface :
 #       - Put a check button near the reponses, that will say to the program if these reponse put an end at the dialog or not,
-#   if
+#   if we say nimporte quoi for a test
