@@ -16,5 +16,15 @@
 #   -> If it's an object, the game can easely use it ! With the different methods we can create in the instance 
 #
 # Ideas for the interface :
-#       - Put a check button near the reponses, that will say to the program if these reponse put an end at the dialog or not,
-#   if we say nimporte quoi for a test
+#       - Put a check label near the answers, that will say to the program if this answer put an end at the dialog or not,
+#   if it is the vector of the answer will be equal to null.
+#		- Make a Method to save an unfinished dialog but make sure that the exported file can't be use by the game because 
+#	it can create some errors if the object is not finished. So save the file as a different object that it can't be read by the game.
+#
+#
+
+import Tkinter
+
+Tkinter._test()
+
+variable = input("This is a test, thanks !")
