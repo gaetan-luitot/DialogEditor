@@ -23,8 +23,7 @@
 #
 #
 
-import Tkinter
+from tkinter import *
 
-Tkinter._test()
 
 variable = input("This is a test, thanks !")
