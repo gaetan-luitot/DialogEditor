@@ -1,7 +1,6 @@
 # Classe "Interface", cette classe va gérer l'interface graphique :
 
 from tkinter import *
-from random import *
 from c_boite import *
 from c_chainage import *
 from c_reponse import *
@@ -36,10 +35,12 @@ class Interface:
 		self.pos.set("x : " + str(self.x) + "\ny : " + str(self.y)) #
 		self.nomFichierBoite = StringVar() # Texte de la position actuel
 		self.nomFichierBoite.set("Nom du fichier")
-		self.chainageActuel = Chainage(self.texteDialogue.get(), [[self.texteRep1.get(), 0, 0, False], [self.texteRep2.get(), 0, 0, False],[self.texteRep3.get(), 0, 0, False]])
+		self.chainageActuel = Chainage(self.texteDialogue.get(), [[self.texteRep1.get(), 0, 0, False], [self.texteRep2.get(), 0, 0, False],[self.texteRep3.get(), 0, 0, False]], 0)
 
 		
 		self.Define() # On créer notre fenêtre de base
+		self.LoadMenu() # On charge le menu au début
+		self.Start() # On commence la boucle 
 
 	def Start(self): # start mainloop
 		self.editor.mainloop()
@@ -92,13 +93,13 @@ class Interface:
 
 		# Entry :
 		self.Texte = Entry(self.editor, textvariable = self.texteDialogue, width = 60) # Texte du PNJ 
-		self.Rep1 = Entry(self.editor, textvariable = self.texteRep1, width = 16) # Réponse 1 du PJ
-		self.Rep2 = Entry(self.editor, textvariable = self.texteRep2, width = 16) # Réponse 2 du PJ
-		self.Rep3 = Entry(self.editor, textvariable = self.texteRep3, width = 16) # Réponse 3 du PJ
+		self.Rep1 = Entry(self.editor, textvariable = self.texteRep1, width = 70) # Réponse 1 du PJ
+		self.Rep2 = Entry(self.editor, textvariable = self.texteRep2, width = 70) # Réponse 2 du PJ
+		self.Rep3 = Entry(self.editor, textvariable = self.texteRep3, width = 70) # Réponse 3 du PJ
 
 		# Button :
 		self.Save = Button(self.editor, text = "Save", command = self.Save) # Bouton pour sauvegarder la boite
-		self.Return = Button(self.editor, text = "Return", command = self.GetCurrent) # Bouton de navigation à travers la boite : retourner en arrière
+		self.Return = Button(self.editor, text = "Return", command = self.Test) # Bouton de navigation à travers la boite : retourner en arrière
 		self.ButtonRep1 = Button(self.editor, text = "Réponse 1", command = self.ApplyCurrent, width = 13) # Btn navigation : aller vers chainage suivant
 		self.ButtonRep2 = Button(self.editor, text = "Réponse 2", command = self.ApplyCurrent, width = 13) # Btn navigation : aller vers chainage suivant
 		self.ButtonRep3 = Button(self.editor, text = "Réponse 3", command = self.ApplyCurrent, width = 13) # Btn navigation : aller vers chainage suivant
@@ -113,19 +114,19 @@ class Interface:
 
 		# UI Other:
 		self.Save.grid(columnspan = 640, rowspan = 360, row = 0, column = 575, sticky = NW)
-		self.Return.grid(columnspan = 640, rowspan = 360, row = 340, column = 260, sticky = NW)
+		self.Return.grid(columnspan = 640, rowspan = 360, row = 0, column = 0, sticky = NW)
 
 		# Texte :
 		self.Texte.grid(columnspan = 640,row = 150, column = 64, sticky = NW)
 		self.TexteLabel.grid(columnspan = 640, rowspan = 360,row = 40, column = 65, sticky = NW)
 
 		# Réponse :
-		self.Rep1.grid(columnspan = 640, rowspan = 360, row = 260, column = 45, sticky = NW)
-		self.Rep2.grid(columnspan = 640, rowspan = 360, row = 260, column = 240, sticky = NW)
-		self.Rep3.grid(columnspan = 640, rowspan = 360, row = 260, column = 435, sticky = NW)
-		self.ButtonRep1.grid(columnspan = 640, rowspan = 360, row = 224, column = 46, sticky = NW)
-		self.ButtonRep2.grid(columnspan = 640, rowspan = 360, row = 224, column = 242, sticky = NW)
-		self.ButtonRep3.grid(columnspan = 640, rowspan = 360, row = 224, column = 436, sticky = NW)
+		self.Rep1.grid(columnspan = 640, rowspan = 360, row = 197, column = 30, sticky = NW)
+		self.Rep2.grid(columnspan = 640, rowspan = 360, row = 263, column = 30, sticky = NW)
+		self.Rep3.grid(columnspan = 640, rowspan = 360, row = 328, column = 30, sticky = NW)
+		self.ButtonRep1.grid(columnspan = 640, rowspan = 360, row = 160, column = 0, sticky = NW)
+		self.ButtonRep2.grid(columnspan = 640, rowspan = 360, row = 226, column = 0, sticky = NW)
+		self.ButtonRep3.grid(columnspan = 640, rowspan = 360, row = 291, column = 0, sticky = NW)
 
 	def ClearEditeur(self):
 		print("I: Déchargement de l'interface d'éditions")
@@ -143,7 +144,7 @@ class Interface:
 		self.ButtonRep2.grid_forget()
 		self.ButtonRep3.grid_forget()
 
-	def ApplyCurrent(self): # Add to box
+	def ApplyCurrent(self): # On ajoute à notre tableau box le chainage que l'on vient de créer
 		self.ActualiserChainage()
 		self.box.Inserer(self.chainageActuel, self.x, self.y)
 
@@ -154,7 +155,12 @@ class Interface:
 		else:
 			print("E: L'index demandé n'existe pas.")
 
-	def ActualiserChainage(self):
+	def GoTo(self):
+		self.ApplyCurrent()
+		self.ActualiserWidgets()
+		# Y * x+1
+
+	def ActualiserChainage(self): # On assignent les infos rentrés dans les Entrys à notre variables chainageActuel
 		listeTemporaire = []
 		indexTemporaire = -1
 		if self.texteRep1.get() != '':
@@ -167,11 +173,16 @@ class Interface:
 			indexTemporaire+= 1
 			listeTemporaire.append(Reponse(self.texteRep3.get(), (self.x +1), indexTemporaire))
 
-		self.chainageActuel = Chainage(self.texteDialogue.get(), listeTemporaire)
+		self.chainageActuel = Chainage(self.texteDialogue.get(), listeTemporaire, 0)
 
-	def ActualiserWidgets(self):
-		try:
-			self.chainageActuel = self.box[0][0]
+	def ActualiserWidgets(self, indexX = 0, indexY = 0): # On actualise les widgets sur un nouveau Chainage 
+		try: # On essaye d'obtenir l'index :
+			self.chainageActuel = self.box[indexX][indexY]
+		except: # Si il n'existe pas :
+			#self.chainageActuel = (Chainage.d_texte,
+			print("ici") # chainageActuel.texte, chainageActuel.Reponses[0])
+			# Créer une boite vierge
+		else: # Si il existe :
 			self.texteDialogue.set(self.chainageActuel.texte)
 			if self.chainageActuel.nombreDeRep > 0:
 				self.texteRep1.set(self.chainageActuel.Reponses[0].texte)
@@ -179,8 +190,7 @@ class Interface:
 				self.texteRep2.set(self.chainageActuel.Reponses[1].texte)
 			if self.chainageActuel.nombreDeRep > 2:
 				self.texteRep3.set(self.chainageActuel.Reponses[2].texte)
-		except:
-			print("E: Le fichier chargé est vide")
+		
 
 
 	def LoadScene(self, nomDuFichier):
@@ -203,7 +213,11 @@ class Interface:
 	def Save(self):
 		self.ApplyCurrent()
 		self.box.Save()
+		# print(getsizeof("Taille : " + self.box))
 		print("I: Sauvegarde effectuée")
 
 	def GoBack(self):
 		self.Save() # On sauvegarde 
+
+	def Test(self):
+		self.box.GetIndice(0)

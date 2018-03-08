@@ -1,8 +1,14 @@
-from c_vecteur import Vecteur
+""" 
+Cet classe représente une réponse que le joueur peut choisir lors d'une scène, elle contient la réponse affichée au joueur, et le chemin 
+à suivre pour continuer la suite du dialogue. 
+"""
 
-class Reponse:
+from c_vecteur import Vecteur # On import notre classe Vecteur
+
+class Reponse: # On définit notre classe, que l'on appelle "Reponse"
 
 	def __init__(self, texte, x, y):#, end): # Constructeur :
-		self.texte = texte # La réponse du PJ
-		self.pos = Vecteur(x, y) # La position de la réponse à la réponse du PJ
+		self.texte = texte # La réponse que le joueur à choisi
+		self.pos = Vecteur(x, y) # La position du Chainage qui répond à la réponse du PJ
 		#self.end = end # Est ce la fin de la scène
+

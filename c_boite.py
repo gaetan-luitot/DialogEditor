@@ -1,4 +1,5 @@
 import pickle
+from c_chainage import Chainage
 
 # Classe Boite :
 
@@ -66,6 +67,15 @@ class Boite:
 		self.nom = nouveauNom
 
 	def GetYndex(self, index):
-		self._tableau[index]
+		return int(len(self._tableau[index]) -1)
 
+	def GetIndice(self, indeX):
+		try:
+			if(str(type(self._tableau[indeX][len(self._tableau[indeX]) -1])) == "<class 'int'>"):
+				print( self._tableau[indeX][len(self._tableau[indeX]) -1].indice)
+				return self._tableau[indeX][len(self._tableau[indeX]) -1].indice
+			else:
+				print("E: L'index \"[" + str(indeX) + "]" + "[" + str(len(self._tableau[indeX]) -1) + "]" +"\" de la boite ne contient pas un Chainage!")
+		except:
+			print("E: L'index \"" + str(indeX) +"\" de la boite n'existe pas !", )
 
