@@ -220,4 +220,4 @@ class Interface:
 		self.Save() # On sauvegarde 
 
 	def Test(self):
-		self.box.GetIndice(0)
+		return self.box.GetIndice(self.x)
