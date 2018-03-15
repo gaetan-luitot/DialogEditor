@@ -71,11 +71,22 @@ class Boite:
 
 	def GetIndice(self, indeX):
 		try:
-			if(str(type(self._tableau[indeX][len(self._tableau[indeX]) -1])) == "<class 'int'>"):
-				print( self._tableau[indeX][len(self._tableau[indeX]) -1].indice)
-				return self._tableau[indeX][len(self._tableau[indeX]) -1].indice
+			if(str(type(self._tableau[indeX][len(self._tableau[indeX]) -1])) == "<class 'c_chainage.Chainage'>"):
+				for i in range(0, len(self._tableau[indeX])):
+					# print("i :" + str(i) + " - " + "indice : " + str(self._tableau[indeX][i].indice))
+					if self._tableau[indeX][i].indice != i:
+						# print("return : " + str(i))
+						return i
+				return (self._tableau[indeX][len(self._tableau[indeX]) -1].indice + 1)
 			else:
 				print("E: L'index \"[" + str(indeX) + "]" + "[" + str(len(self._tableau[indeX]) -1) + "]" +"\" de la boite ne contient pas un Chainage!")
-		except:
-			print("E: L'index \"" + str(indeX) +"\" de la boite n'existe pas !", )
+				return -1
+		except: # Si c'est le premier :
+			print("I: L'index \"" + str(indeX) +"\" de la boite n'existe pas !")
+			# print("return : 0")
+			return 0
+
+	def Len(self):
+		return len(self._tableau)
+
 

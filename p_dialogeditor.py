@@ -8,6 +8,5 @@
 from c_interface import *
 from sys import getsizeof
 
-
 interface = Interface()
 

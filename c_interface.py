@@ -1,5 +1,6 @@
 # Classe "Interface", cette classe va gérer l'interface graphique :
 
+import sys
 from tkinter import *
 from c_boite import *
 from c_chainage import *
@@ -15,6 +16,8 @@ from c_reponse import *
 class Interface:
 
 	def __init__(self): # Constructeur :
+		try: self.color = sys.stdout.shell
+		except AttributeError: raise RuntimeError("Use IDLE")
 		# Fenêtre :
 		self.editor = Tk() # On créer une fenêtre "editor"
 		self.editor['bg']='black' # On met le fond de couleur noir 
@@ -23,6 +26,7 @@ class Interface:
 		self.editor.resizable(0,0) # On fixe la taille pour qu'on ne puisse pas la modifier
 
 		# Variables :
+		self.debugArray = []
 		self.box = Boite("default")
 		self.texteRep1 = StringVar() # Texte de la réponse 1 actuel
 		self.texteRep2 = StringVar() # Texte de la réponse 2 actuel
@@ -100,9 +104,9 @@ class Interface:
 		# Button :
 		self.Save = Button(self.editor, text = "Save", command = self.Save) # Bouton pour sauvegarder la boite
 		self.Return = Button(self.editor, text = "Return", command = self.Test) # Bouton de navigation à travers la boite : retourner en arrière
-		self.ButtonRep1 = Button(self.editor, text = "Réponse 1", command = self.ApplyCurrent, width = 13) # Btn navigation : aller vers chainage suivant
-		self.ButtonRep2 = Button(self.editor, text = "Réponse 2", command = self.ApplyCurrent, width = 13) # Btn navigation : aller vers chainage suivant
-		self.ButtonRep3 = Button(self.editor, text = "Réponse 3", command = self.ApplyCurrent, width = 13) # Btn navigation : aller vers chainage suivant
+		self.ButtonRep1 = Button(self.editor, text = "Réponse 1", command = lambda: self.ApplyCurrent(0), width = 13) # Btn navigation : aller vers chainage suivant
+		self.ButtonRep2 = Button(self.editor, text = "Réponse 2", command = lambda: self.ApplyCurrent(1), width = 13) # Btn navigation : aller vers chainage suivant
+		self.ButtonRep3 = Button(self.editor, text = "Réponse 3", command = lambda: self.ApplyCurrent(2), width = 13) # Btn navigation : aller vers chainage suivant
 
 		self.PackEditeur() # On affiche le tout
 		
@@ -144,45 +148,74 @@ class Interface:
 		self.ButtonRep2.grid_forget()
 		self.ButtonRep3.grid_forget()
 
-	def ApplyCurrent(self): # On ajoute à notre tableau box le chainage que l'on vient de créer
-		self.ActualiserChainage()
-		self.box.Inserer(self.chainageActuel, self.x, self.y)
-
-	def GetCurrent(self): 
-		if self.box[self.x][self.y] != None:
-			self.chainageActuel = self.box[self.x][self.y]
-			print(self.box[self.x][self.y].texte)
+	def ApplyCurrent(self, nbButton): # On ajoute à notre tableau box le chainage que l'on vient de créer
+		if(nbButton > len(self.chainageActuel.Reponses)):
+			print("ERRREUR")
+		self.SetToBox()
+		try:
+			if(self.chainageActuel.Reponses[nbButton].texte == ''):
+				print("I: La réponse est vide, veuillez en créer une pour pouvoir y accéder !")
+		except:
+			print("I: La réponse est vide, veuillez en créer une pour pouvoir y accéder !")
 		else:
-			print("E: L'index demandé n'existe pas.")
+			self.debugArray.append(str(Vecteur(self.x, self.y)))
+			self.x += 1 
+			self.pos.set("x : " + str(self.x) + "\ny : " + str(self.y))
+			self.y = self.ZtoY(self.x -1, self.chainageActuel.Reponses[nbButton].pos.z)
+			self.pos.set("x : " + str(self.x) + "\ny : " + str(self.y))
+			self.GetFromBox()
+		self.Debug()
 
-	def GoTo(self):
-		self.ApplyCurrent()
-		self.ActualiserWidgets()
-		# Y * x+1
-
-	def ActualiserChainage(self): # On assignent les infos rentrés dans les Entrys à notre variables chainageActuel
+	def SetToBox(self): # On assignent les infos rentrés dans les Entrys à notre variables chainageActuel
 		listeTemporaire = []
-		indexTemporaire = -1
+
 		if self.texteRep1.get() != '':
-			indexTemporaire+= 1
-			listeTemporaire.append(Reponse(self.texteRep1.get(), (self.x +1), indexTemporaire))
+			try:
+				if (self.chainageActuel.Reponses[0].pos.z != None): # On regarde si notre réponse est déjà configuré :
+					listeTemporaire.append(Reponse(self.texteRep1.get(), self.chainageActuel.Reponses[0].pos.x, self.chainageActuel.Reponses[0].pos.z))
+					print("Rep 0 : On modifie")
+			except:
+				listeTemporaire.append(Reponse(self.texteRep1.get(), (self.x +1), self.box.GetIndice(self.x + 1)))
+				self.box.Ajouter(Chainage(Chainage.d_texte, Chainage.d_Reponses, self.box.GetIndice(self.x +1)), self.x + 1)
+				print("Rep 0 : On créer")
+
 		if self.texteRep2.get() != '':
-			indexTemporaire+= 1
-			listeTemporaire.append(Reponse(self.texteRep2.get(), (self.x +1), indexTemporaire))
+			try:
+				if  (self.chainageActuel.Reponses[1].pos.z != None): # On regarde si notre réponse est déjà configuré :
+					listeTemporaire.append(Reponse(self.texteRep2.get(), self.chainageActuel.Reponses[1].pos.x, self.chainageActuel.Reponses[1].pos.z))
+					print("Rep 1 : On modifie")
+			except:
+				listeTemporaire.append(Reponse(self.texteRep2.get(), (self.x +1), self.box.GetIndice(self.x + 1)))
+				self.box.Ajouter(Chainage(Chainage.d_texte, Chainage.d_Reponses, self.box.GetIndice(self.x +1)), self.x + 1)
+				print("Rep 1 : On créer")
+
 		if self.texteRep3.get() != '':
-			indexTemporaire+= 1
-			listeTemporaire.append(Reponse(self.texteRep3.get(), (self.x +1), indexTemporaire))
+			try:
+				if (self.chainageActuel.Reponses[2].pos.z != None): # On regarde si notre réponse est déjà configuré :
+					listeTemporaire.append(Reponse(self.texteRep3.get(), self.chainageActuel.Reponses[2].pos.x, self.chainageActuel.Reponses[2].pos.z))
+					print("Rep 2 : On modifie")
+			except:
+				listeTemporaire.append(Reponse(self.texteRep3.get(), (self.x +1), self.box.GetIndice(self.x + 1)))
+				self.box.Ajouter(Chainage(Chainage.d_texte, Chainage.d_Reponses, self.box.GetIndice(self.x +1)), self.x + 1)
+				print("Rep 2 : On créer")
 
 		self.chainageActuel = Chainage(self.texteDialogue.get(), listeTemporaire, 0)
+		print("I: Application des modifications sur la boite en : " + str(self.x) + " " + str(self.y))
+		self.box[self.x][self.y] = self.chainageActuel
 
-	def ActualiserWidgets(self, indexX = 0, indexY = 0): # On actualise les widgets sur un nouveau Chainage 
+	def GetFromBox(self, indexX = None, indexY = None): # On actualise les widgets sur un nouveau Chainage 
+		if (indexX == None):
+			indexX = self.x
+		if (indexY == None):
+			indexY = self.y
+
 		try: # On essaye d'obtenir l'index :
 			self.chainageActuel = self.box[indexX][indexY]
-		except: # Si il n'existe pas :
-			#self.chainageActuel = (Chainage.d_texte,
-			print("ici") # chainageActuel.texte, chainageActuel.Reponses[0])
-			# Créer une boite vierge
-		else: # Si il existe :
+		except: # Si il n'existe pas on le créer:
+			print("On ajoute une boite en : "+ str(indexX) + " " + str(indexY))
+			self.box.Ajouter(Chainage(Chainage.d_texte, Chainage.d_Reponses, self.box.GetIndice(indexX)), self.x)
+			self.chainageActuel = self.box[indexX][indexY]
+		finally: # Puis dans tout les cas on actualise les widgets :
 			self.texteDialogue.set(self.chainageActuel.texte)
 			if self.chainageActuel.nombreDeRep > 0:
 				self.texteRep1.set(self.chainageActuel.Reponses[0].texte)
@@ -191,15 +224,14 @@ class Interface:
 			if self.chainageActuel.nombreDeRep > 2:
 				self.texteRep3.set(self.chainageActuel.Reponses[2].texte)
 		
-
-
 	def LoadScene(self, nomDuFichier):
 		try:
 			self.box.Load(nomDuFichier)
 			print("I: Chargement du fichier " + nomDuFichier + ".save")
 			self.ClearMenu()
 			self.LoadEditeur()
-			self.ActualiserWidgets()
+			self.GetFromBox()
+			self.Debug()
 		except:
 			print("E: Le ficher n'existe pas !")
 		
@@ -209,9 +241,11 @@ class Interface:
 		self.ClearMenu()
 		self.LoadEditeur()
 		print("I: Création du fichier " + nomDuFichier)
+		self.GetFromBox()
+		print("I: Création du point d'origine [0][0]")
 
 	def Save(self):
-		self.ApplyCurrent()
+		self.SetToBox()
 		self.box.Save()
 		# print(getsizeof("Taille : " + self.box))
 		print("I: Sauvegarde effectuée")
@@ -220,4 +254,43 @@ class Interface:
 		self.Save() # On sauvegarde 
 
 	def Test(self):
-		return self.box.GetIndice(self.x)
+		for x in range(0, len(self.debugArray)):
+			self.color.write(str(self.debugArray[x]),"COMMENT")
+		
+
+	def ZtoY(self, index, indiceToFind):
+		print("Indice à chercher : " + str(indiceToFind) + " index : " + str(index))
+		for i in range(0, len(self.box[index])):
+			for x in range(0, len(self.box[index][i].Reponses)):
+				if (self.box[index][i].Reponses[x].pos.z == indiceToFind):
+					return int(x)
+		print("E: Indice recherché non trouvé")
+
+	def YtoZ(self, indexY, indexX = None):
+		if (indexX == None):
+			indexX = self.x
+		return self.box[indexX][indexY].indice
+
+	def Debug(self):
+		for z in range(0,self.box.Len()):
+			print("----------### "+ str(z)+" ###----------")
+			try:
+				for i in range (0, len(self.box[z])):
+					if (z == self.x and i == self.y):
+						self.color.write("|-| -> " + str(self.box[z][i].indice) + "\n","COMMENT")
+					elif(self.debugArray.count(str(Vecteur(z, i))) == 1):
+						self.color.write("|-| -> " + str(self.box[z][i].indice) + "\n","KEYWORD")
+					else:
+						print("|-| -> " + str(self.box[z][i].indice))
+
+					for x in range(0, len(self.box[z][i].Reponses)):
+						if (str(self.box[z][i].Reponses[x].pos) == str(Vecteur(self.x, self.y)) or self.debugArray.count(str(self.box[z][i].Reponses[x].pos)) == 1):
+							#self.debugArray.append()
+							self.color.write("        " + str(self.box[z][i].Reponses[x].pos) + "\n","KEYWORD")
+						else:
+							print("        " + str(self.box[z][i].Reponses[x].pos))
+							
+			except:
+				raise
+
+
