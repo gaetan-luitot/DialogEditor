@@ -10,3 +10,6 @@ class Vecteur: # On définit notre classe, que l'on appelle "Vecteur" (On aurait
 
 	def __repr__(self):
 		return str("["+ str(self.x)+"] [" + str(self.z) + "]")
+
+	def get(self):
+		return str("["+ str(self.x)+"] [" + str(self.z) + "]")

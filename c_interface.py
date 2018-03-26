@@ -156,7 +156,7 @@ class Interface:
 		if (self.x != 0):
 			self.SetToBox()	# A verif
 			self.x -= 1 
-			self.y = int(self.debugArray[-1][5])
+			self.y = int(self.debugArray[-1][0].z) ################ HERE ############
 			self.pos.set("x : " + str(self.x) + "\ny : " + str(self.y))
 			del self.debugArray[-1]
 			self.GetFromBox()
@@ -169,7 +169,7 @@ class Interface:
 			print("I: La réponse est vide, veuillez en créer une pour pouvoir y accéder !")
 		else:
 			self.SetToBox()
-			self.debugArray.append(str(Vecteur(self.x, self.y)))
+			self.debugArray.append([Vecteur(self.x, self.y) ,str(Vecteur(self.x, self.y))])
 			self.x += 1 
 			self.pos.set("x : " + str(self.x) + "\ny : " + str(self.y))
 			self.y = self.ZtoYrep(self.x -1, self.chainageActuel.Reponses[nbButton].pos.z)
@@ -182,19 +182,15 @@ class Interface:
 
 		if self.texteRep1.get() != '':
 			try:
-				print("< Modif ")
 				if (self.chainageActuel.Reponses[0].pos.z != None): # On regarde si notre réponse est déjà configuré :
 					listeTemporaire.append(Reponse(self.texteRep1.get(), self.chainageActuel.Reponses[0].pos.x, self.chainageActuel.Reponses[0].pos.z))
 				else:
 					listeTemporaire.append(Reponse(self.texteRep1.get(), (self.x +1), self.box.GetIndice(self.x + 1)))
 					self.box.Ajouter(Chainage(Chainage.d_texte, Chainage.d_Reponses, self.box.GetIndice(self.x +1)), self.x + 1)
-				print(" Modif >")
 
 			except:
-				print("< Créer ")
 				listeTemporaire.append(Reponse(self.texteRep1.get(), (self.x +1), self.box.GetIndice(self.x + 1)))
 				self.box.Ajouter(Chainage(Chainage.d_texte, Chainage.d_Reponses, self.box.GetIndice(self.x +1)), self.x + 1)
-				print(" Créer >")
 
 		if self.texteRep2.get() != '':
 			try:
@@ -296,14 +292,13 @@ class Interface:
 				for i in range (0, len(self.box[z])):
 					if (z == self.x and i == self.y):
 						self.color.write("|-| -> " + str(self.box[z][i].indice) + "\n","COMMENT")
-					elif(self.debugArray.count(str(Vecteur(z, i))) == 1):
+					elif(self.Count(str(Vecteur(z, i))) == 1):
 						self.color.write("|-| -> " + str(self.box[z][i].indice) + "\n","KEYWORD")
 					else:
 						print("|-| -> " + str(self.box[z][i].indice))
 
 					for x in range(0, len(self.box[z][i].Reponses)):
-						if (str(self.box[z][i].Reponses[x].pos) == str(Vecteur(self.x, self.y)) or self.debugArray.count(str(self.box[z][i].Reponses[x].pos)) == 1):
-							#self.debugArray.append()
+						if (str(self.box[z][i].Reponses[x].pos) == str(Vecteur(self.x, self.y)) or self.Count(str(self.box[z][i].Reponses[x].pos)) == 1):
 							self.color.write("        " + str(self.box[z][i].Reponses[x].pos) + "\n","KEYWORD")
 						else:
 							print("        " + str(self.box[z][i].Reponses[x].pos))
@@ -313,20 +308,25 @@ class Interface:
 
 
 	def Delete(self):
-		variableTemporaire = self.chainageActuel.indice
-		boxToDel = str(self.x) + str(self.y)
-		# Supprimer les chemins :
-		self.DeleteAllWays()
-		self.x -= 1
-		self.y = int(self.debugArray[-1][5])
-		self.pos.set("x : " + str(self.x) + "\ny : " + str(self.y))
-		del self.debugArray[-1]
-		for i in range(1, len(self.box[self.x][self.y].Reponses)+1):
-			if(self.box[self.x][self.y].Reponses[-i].pos.z == variableTemporaire): ########" len = 2 il en supprime 1 donc len = 1"
-				del self.box[self.x][self.y].Reponses[-i]
+		if (len(self.box[self.x][self.y].Reponses) != 0):
+			repToDel = 0
+			variableTemporaire = self.chainageActuel.indice
+			boxToDel = [self.x, self.y]
+			self.DeleteAllWays() # On supprime les sous chemins
+			if self.x != 0:
+				self.x -= 1
+				self.y = int(self.debugArray[-1][0].z)
+				self.pos.set("x : " + str(self.x) + "\ny : " + str(self.y))
+				del self.debugArray[-1]
+	  		
 
-		self.box.Supprimer(int(boxToDel[0]), int(boxToDel[1])) ########### A MODIF ########
-		self.GetFromBox()
+			for i in range(0, len(self.box[self.x][self.y].Reponses)):
+				if(self.box[self.x][self.y].Reponses[i].pos.z == variableTemporaire):
+					repToDel = i
+			
+			del self.box[self.x][self.y].Reponses[repToDel]
+			self.box.Supprimer(boxToDel[0], boxToDel[1])
+			self.GetFromBox()
 		
 	def DeleteAllWays(self):
 		xActu = self.x
@@ -362,4 +362,11 @@ class Interface:
 		# Maintenant on supprime tout :
 		for i in range(1, len(listeChainesupp)+1):
 			self.box.Supprimer(int(listeChainesupp[-i].x), int(listeChainesupp[-i].z))
+
+	def Count(self, obj):
+		count = 0
+		for i in range(0, len(self.debugArray)):
+			count += self.debugArray[i][1].count(obj)
+		return count
+
 			

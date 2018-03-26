@@ -13,8 +13,7 @@
 # -> Ajouter les réponses avec un jets
 # -> Fare une fonction return des vecteurs pour les x et z > 9
 
-# v 0.2 
-# -> Faire la fonction delete
+
 
 
 from c_interface import *
