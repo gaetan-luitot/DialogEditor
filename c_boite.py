@@ -82,8 +82,6 @@ class Boite:
 				print("E: L'index \"[" + str(indeX) + "]" + "[" + str(len(self._tableau[indeX]) -1) + "]" +"\" de la boite ne contient pas un Chainage!")
 				return -1
 		except: # Si c'est le premier :
-			print("I: L'index \"" + str(indeX) +"\" de la boite n'existe pas !")
-			# print("return : 0")
 			return 0
 
 	def Len(self):
