@@ -5,6 +5,7 @@ from tkinter import *
 from c_boite import *
 from c_chainage import *
 from c_reponse import *
+from tkinter.messagebox import *
 
 
 # TODO :
@@ -46,7 +47,9 @@ class Interface:
 		self.nomFichierBoite = StringVar() # Texte de la position actuel
 		self.nomFichierBoite.set("Nom du fichier")
 		self.chainageActuel = Chainage(self.texteDialogue.get(), [[self.texteRep1.get(), 0, 0, False], [self.texteRep2.get(), 0, 0, False],[self.texteRep3.get(), 0, 0, False]], 0)
-
+		self.hiden1 = IntVar()
+		self.hiden2 = IntVar()
+		self.hiden3 = IntVar()
 		
 		self.Define() # On créer notre fenêtre de base
 		self.LoadMenu() # On charge le menu au début
@@ -118,9 +121,18 @@ class Interface:
 		self.B_Delete = Button(self.editor, text = "Delete", command = self.Delete) # Bouton pour sauvegarder la boite
 		self.B_Debug = Button(self.editor, text = "Debug", command = self.Debug) # Bouton afficher à quoi ressemble la boite
 		self.B_Return = Button(self.editor, text = "Return", command = self.Return) # Bouton de navigation à travers la boite : retourner en arrière
+		self.B_Mike = Button(self.editor, text = "M", command = self.Mike)
+		self.B_Jet1 = Button(self.editor, text = "Jet", command = lambda: self.Jet(0), width = 1)  
+		self.B_Jet2 = Button(self.editor, text = "Jet", command = lambda: self.Jet(1), width = 1)  
+		self.B_Jet3 = Button(self.editor, text = "Jet", command = lambda: self.Jet(2), width = 1)  
 		self.ButtonRep1 = Button(self.editor, text = "Réponse 1", command = lambda: self.ApplyCurrent(0), width = 13) # Btn navigation : aller vers chainage suivant
 		self.ButtonRep2 = Button(self.editor, text = "Réponse 2", command = lambda: self.ApplyCurrent(1), width = 13) # Btn navigation : aller vers chainage suivant
 		self.ButtonRep3 = Button(self.editor, text = "Réponse 3", command = lambda: self.ApplyCurrent(2), width = 13) # Btn navigation : aller vers chainage suivant
+
+		# CheckBox :
+		self.checkRep1 = Checkbutton(self.editor, text = "Cacher", variable = self.hiden1 , bg = 'white', activebackground = 'white', activeforeground = 'black', fg = 'black')
+		self.checkRep2 = Checkbutton(self.editor, text = "Cacher", variable = self.hiden2 , bg = 'white', activebackground = 'white', activeforeground = 'black', fg = 'black')
+		self.checkRep3 = Checkbutton(self.editor, text = "Cacher", variable = self.hiden3 , bg = 'white', activebackground = 'white', activeforeground = 'black', fg = 'black')
 
 		self.PackEditeur() # On affiche le tout
 		
@@ -153,6 +165,13 @@ class Interface:
 		self.EntryyRep2.grid(columnspan = 640, rowspan = 360, row = 231, column = 150, sticky = NW)
 		self.EntryxRep3.grid(columnspan = 640, rowspan = 360, row = 296, column = 120, sticky = NW)
 		self.EntryyRep3.grid(columnspan = 640, rowspan = 360, row = 296, column = 150, sticky = NW)
+		self.B_Mike.grid(columnspan = 640, rowspan = 360, row = 100, column = 580, sticky = NW)
+		self.B_Jet1.grid(columnspan = 640, rowspan = 360, row = 160, column = 190, sticky = NW)
+		self.B_Jet2.grid(columnspan = 640, rowspan = 360, row = 226, column = 190, sticky = NW)
+		self.B_Jet3.grid(columnspan = 640, rowspan = 360, row = 291, column = 190, sticky = NW)
+		self.checkRep1.grid(columnspan = 640, rowspan = 360, row = 165, column = 235, sticky = NW)
+		self.checkRep2.grid(columnspan = 640, rowspan = 360, row = 231, column = 235, sticky = NW)
+		self.checkRep3.grid(columnspan = 640, rowspan = 360, row = 296, column = 235, sticky = NW)
 
 	def ClearEditeur(self):
 		print("I: Déchargement de l'interface d'éditions")
@@ -172,9 +191,9 @@ class Interface:
 
 	def Return(self):
 		if (self.x != 0):
-			self.SetToBox()	# A verif
+			self.SetToBox()
 			self.x -= 1 
-			self.y = int(self.debugArray[-1][0].z) ################ HERE ############
+			self.y = int(self.debugArray[-1][0].z)
 			self.pos.set("x : " + str(self.x) + "\ny : " + str(self.y))
 			del self.debugArray[-1]
 			self.GetFromBox()
@@ -198,45 +217,58 @@ class Interface:
 
 	def SetToBox(self): # On assignent les infos rentrés dans les Entrys à notre variables chainageActuel
 		listeTemporaire = []
+		listeExtend = []
+		try:
+			listeExtend.append(self.chainageActuel.Reponses[0].extend)
+		except:
+			listeExtend.append(False)
+		try:
+			listeExtend.append(self.chainageActuel.Reponses[1].extend)
+		except:
+			listeExtend.append(False)
+		try:
+			listeExtend.append(self.chainageActuel.Reponses[2].extend)
+		except:
+			listeExtend.append(False)
 
 		if self.texteRep1.get() != '':
 			try:
 				if (self.chainageActuel.Reponses[0].pos.z != None): # On regarde si notre réponse est déjà configuré :
 					if (self.xRep1.get() != '' and self.yRep1.get() != ''): # Si on veut utiliser une boite plusieurs fois
-						listeTemporaire.append(Reponse(self.texteRep1.get(), int(self.xRep1.get()), int(self.yRep1.get())))
+						listeTemporaire.append(Reponse(self.texteRep1.get(), int(self.xRep1.get()), int(self.yRep1.get()), bool(self.hiden1.get()),listeExtend[0]))
 					else:
-						listeTemporaire.append(Reponse(self.texteRep1.get(), self.chainageActuel.Reponses[0].pos.x, self.chainageActuel.Reponses[0].pos.z))
+						listeTemporaire.append(Reponse(self.texteRep1.get(), self.chainageActuel.Reponses[0].pos.x, self.chainageActuel.Reponses[0].pos.z, bool(self.hiden1.get()), listeExtend[0]))
 				else:
 					if (self.xRep1.get() != '' and self.yRep1.get() != ''):
-						listeTemporaire.append(Reponse(self.texteRep1.get(), int(self.xRep1.get()), int(self.yRep1.get())))
+						listeTemporaire.append(Reponse(self.texteRep1.get(), int(self.xRep1.get()), int(self.yRep1.get()), bool(self.hiden1.get()), listeExtend[0]))
 					else:
-						listeTemporaire.append(Reponse(self.texteRep1.get(), (self.x +1), self.box.GetIndice(self.x + 1)))
+						listeTemporaire.append(Reponse(self.texteRep1.get(), (self.x +1), self.box.GetIndice(self.x + 1), bool(self.hiden1.get()), listeExtend[0]))
 						self.box.Ajouter(Chainage(Chainage.d_texte, Chainage.d_Reponses, self.box.GetIndice(self.x +1)), self.x + 1)
 			except:
 				if (self.xRep1.get() != '' and self.yRep1.get() != ''):
-					listeTemporaire.append(Reponse(self.texteRep1.get(), int(self.xRep1.get()),  int(self.yRep1.get())))
+					listeTemporaire.append(Reponse(self.texteRep1.get(), int(self.xRep1.get()),  int(self.yRep1.get()), bool(self.hiden1.get()), listeExtend[0]))
 				else:
-					listeTemporaire.append(Reponse(self.texteRep1.get(), (self.x +1), self.box.GetIndice(self.x + 1)))
+					listeTemporaire.append(Reponse(self.texteRep1.get(), (self.x +1), self.box.GetIndice(self.x + 1), bool(self.hiden1.get()), listeExtend[0]))
 					self.box.Ajouter(Chainage(Chainage.d_texte, Chainage.d_Reponses, self.box.GetIndice(self.x +1)), self.x + 1)
 
 		if self.texteRep2.get() != '':
 			try:
 				if (self.chainageActuel.Reponses[1].pos.z != None): # On regarde si notre réponse est déjà configuré :
 					if (self.xRep2.get() != '' and self.yRep2.get() != ''): # Si on veut utiliser une boite plusieurs fois
-						listeTemporaire.append(Reponse(self.texteRep2.get(), int(self.xRep2.get()), int(self.yRep2.get())))
+						listeTemporaire.append(Reponse(self.texteRep2.get(), int(self.xRep2.get()), int(self.yRep2.get()), bool(self.hiden2.get()), listeExtend[1]))
 					else:
-						listeTemporaire.append(Reponse(self.texteRep2.get(), self.chainageActuel.Reponses[1].pos.x, self.chainageActuel.Reponses[1].pos.z))
+						listeTemporaire.append(Reponse(self.texteRep2.get(), self.chainageActuel.Reponses[1].pos.x, self.chainageActuel.Reponses[1].pos.z, bool(self.hiden2.get()), listeExtend[1]))
 				else:
 					if (self.xRep2.get() != '' and self.yRep2.get() != ''):
-						listeTemporaire.append(Reponse(self.texteRep2.get(), int(self.xRep2.get()), int(self.yRep2.get())))
+						listeTemporaire.append(Reponse(self.texteRep2.get(), int(self.xRep2.get()), int(self.yRep2.get()), bool(self.hiden2.get()), listeExtend[1]))
 					else:
-						listeTemporaire.append(Reponse(self.texteRep2.get(), (self.x +1), self.box.GetIndice(self.x + 1)))
+						listeTemporaire.append(Reponse(self.texteRep2.get(), (self.x +1), self.box.GetIndice(self.x + 1), bool(self.hiden2.get()), listeExtend[1]))
 						self.box.Ajouter(Chainage(Chainage.d_texte, Chainage.d_Reponses, self.box.GetIndice(self.x +1)), self.x + 1)
 			except:
 				if (self.xRep2.get() != '' and self.yRep2.get() != ''):
-					listeTemporaire.append(Reponse(self.texteRep2.get(), int(self.xRep2.get()),  int(self.yRep2.get())))
+					listeTemporaire.append(Reponse(self.texteRep2.get(), int(self.xRep2.get()),  int(self.yRep2.get()), bool(self.hiden2.get()), listeExtend[1]))
 				else:
-					listeTemporaire.append(Reponse(self.texteRep2.get(), (self.x +1), self.box.GetIndice(self.x + 1)))
+					listeTemporaire.append(Reponse(self.texteRep2.get(), (self.x +1), self.box.GetIndice(self.x + 1), bool(self.hiden2.get()), listeExtend[1]))
 					self.box.Ajouter(Chainage(Chainage.d_texte, Chainage.d_Reponses, self.box.GetIndice(self.x +1)), self.x + 1)
 
 
@@ -245,20 +277,20 @@ class Interface:
 			try:
 				if (self.chainageActuel.Reponses[2].pos.z != None): # On regarde si notre réponse est déjà configuré :
 					if (self.xRep3.get() != '' and self.yRep3.get() != ''): # Si on veut utiliser une boite plusieurs fois
-						listeTemporaire.append(Reponse(self.texteRep3.get(), int(self.xRep3.get()), int(self.yRep3.get())))
+						listeTemporaire.append(Reponse(self.texteRep3.get(), int(self.xRep3.get()), int(self.yRep3.get()), bool(self.hiden3.get()), listeExtend[2]))
 					else:
-						listeTemporaire.append(Reponse(self.texteRep3.get(), self.chainageActuel.Reponses[2].pos.x, self.chainageActuel.Reponses[2].pos.z))
+						listeTemporaire.append(Reponse(self.texteRep3.get(), self.chainageActuel.Reponses[2].pos.x, self.chainageActuel.Reponses[2].pos.z, bool(self.hiden3.get()), listeExtend[2]))
 				else:
 					if (self.xRep3.get() != '' and self.yRep3.get() != ''):
-						listeTemporaire.append(Reponse(self.texteRep3.get(), int(self.xRep3.get()), int(self.yRep3.get())))
+						listeTemporaire.append(Reponse(self.texteRep3.get(), int(self.xRep3.get()), int(self.yRep3.get()), bool(self.hiden3.get()), listeExtend[2]))
 					else:
-						listeTemporaire.append(Reponse(self.texteRep3.get(), (self.x +1), self.box.GetIndice(self.x + 1)))
+						listeTemporaire.append(Reponse(self.texteRep3.get(), (self.x +1), self.box.GetIndice(self.x + 1), bool(self.hiden3.get()), listeExtend[2]))
 						self.box.Ajouter(Chainage(Chainage.d_texte, Chainage.d_Reponses, self.box.GetIndice(self.x +1)), self.x + 1)
 			except:
 				if (self.xRep3.get() != '' and self.yRep3.get() != ''):
-					listeTemporaire.append(Reponse(self.texteRep3.get(), int(self.xRep3.get()),  int(self.yRep3.get())))
+					listeTemporaire.append(Reponse(self.texteRep3.get(), int(self.xRep3.get()),  int(self.yRep3.get()), bool(self.hiden3.get()), listeExtend[2]))
 				else:
-					listeTemporaire.append(Reponse(self.texteRep3.get(), (self.x +1), self.box.GetIndice(self.x + 1)))
+					listeTemporaire.append(Reponse(self.texteRep3.get(), (self.x +1), self.box.GetIndice(self.x + 1), bool(self.hiden3.get()), listeExtend[2]))
 					self.box.Ajouter(Chainage(Chainage.d_texte, Chainage.d_Reponses, self.box.GetIndice(self.x +1)), self.x + 1)
 
 
@@ -272,6 +304,7 @@ class Interface:
 			indexX = self.x
 		if (indexY == None):
 			indexY = self.y
+
 
 		try: # On essaye d'obtenir l'index :
 			self.chainageActuel = self.box[indexX][indexY]
@@ -306,6 +339,30 @@ class Interface:
 				self.texteRep3.set('')
 				self.xRep3.set('')
 				self.yRep3.set('')
+
+			try:
+				if (self.box[self.x][self.y].Reponses[0].hiden == True):
+					self.checkRep1.select()
+				else:
+					self.checkRep1.deselect()
+			except:
+				self.checkRep1.deselect()
+
+			try:
+				if (self.box[self.x][self.y].Reponses[1].hiden == True):
+					self.checkRep2.select()
+				else:
+					self.checkRep2.deselect()
+			except:
+				self.checkRep2.deselect()
+
+			try:
+				if (self.box[self.x][self.y].Reponses[2].hiden == True):
+					self.checkRep3.select()
+				else:
+					self.checkRep3.deselect()
+			except:
+				self.checkRep3.deselect()
 		
 	def LoadScene(self, nomDuFichier):
 		try:
@@ -316,21 +373,27 @@ class Interface:
 			self.GetFromBox()
 			self.Debug()
 		except:
+			raise
 			print("E: Le ficher n'existe pas !")
 		
 
 	def NewScene(self, nomDuFichier):
+		teste = Boite("teste")
+		try:
+			teste.Load(nomDuFichier)
+			showwarning('Warning', 'Attention un fichier porte déjà ce nom, si vous sauvegarder ce nouveau fichier cela supprimera le premier !')
+			print("I: Création du fichier " + nomDuFichier)
+		except:
+			print("I: Création du fichier " + nomDuFichier)
 		self.box.New(nomDuFichier)
 		self.ClearMenu()
 		self.LoadEditeur()
-		print("I: Création du fichier " + nomDuFichier)
 		self.GetFromBox()
 		print("I: Création du point d'origine [0][0]")
 
 	def Save(self):
 		self.SetToBox()
 		self.box.Save()
-		# print(getsizeof("Taille : " + self.box))
 		print("I: Sauvegarde effectuée")
 		
 	def ZtoYchai(self, index, indiceToFind):
@@ -365,11 +428,18 @@ class Interface:
 
 					for x in range(0, len(self.box[z][i].Reponses)):
 						if (str(self.box[z][i].Reponses[x].pos) == str(Vecteur(self.x, self.y)) or self.Count(str(self.box[z][i].Reponses[x].pos)) == 1):
-							self.color.write("        " + str(self.box[z][i].Reponses[x].pos) + "\n","KEYWORD")
+							if (type(self.box[z][i].Reponses[x].extend) == type(Extension(None, None, None, None))):
+								self.color.write("        " + str(self.box[z][i].Reponses[x].pos) + " | " + str(self.box[z][i].Reponses[x].extend.pos2) + " " + str(self.box[z][i].Reponses[x].hiden) + "\n","KEYWORD")
+							else:
+								self.color.write("        " + str(self.box[z][i].Reponses[x].pos) + " " + str(self.box[z][i].Reponses[x].hiden) + "\n","KEYWORD")
 						else:
-							print("        " + str(self.box[z][i].Reponses[x].pos))
+							if (type(self.box[z][i].Reponses[x].extend) == type(Extension(None, None, None, None))):
+								print("        " + str(self.box[z][i].Reponses[x].pos) + " | " + str(self.box[z][i].Reponses[x].extend.pos2) + " " + str(self.box[z][i].Reponses[x].hiden))
+							else:
+								print("        " + str(self.box[z][i].Reponses[x].pos) + " " + str(self.box[z][i].Reponses[x].hiden))
 							
 			except:
+				raise
 				print("Hum erreur !")
 
 
@@ -435,4 +505,105 @@ class Interface:
 			count += self.debugArray[i][1].count(obj)
 		return count
 
-			
+		
+
+	def Jet(self, bouton):
+		def Valider(bouton):
+			print(liste.get(ACTIVE))
+			self.box[self.x][self.y].Reponses[bouton].extend = Extension(liste.get(ACTIVE), E_dificult.get(), E_x2.get(), E_z2.get())
+			menu_jet.destroy()
+
+		def Dejetyfication(bouton):
+			self.box[self.x][self.y].Reponses[bouton].extend = False
+			menu_jet.destroy()
+
+		def ActualiserListe(obj):
+			print(str(obj.widget.curselection()[0]))
+			listeState.set(liste.get(str(obj.widget.curselection()[0])))
+
+		# Création d'une nouvelle fenètre
+		menu_jet = Toplevel(self.editor)
+		menu_jet['bg']='black' # On met le fond de couleur noir 
+		menu_jet.title("Configuration Jet") # On nomme la fenêtre 
+		menu_jet.geometry("200x100") # On définit une taille pour la fenêtre
+		menu_jet.resizable(0,0)
+		
+		# ListBox :
+		liste = Listbox(menu_jet, height = 3, width = 8)
+		liste.bind('<<ListboxSelect>>', ActualiserListe)
+		liste.insert(1, "Physique")
+		liste.insert(2, "Mental")
+		liste.insert(3, "Social")
+		doc = {"Social" : 2, "Mental" : 1, "Physique" : 0}
+		liste.grid(rowspan = 3, row = 0, column = 1, sticky = NE)
+
+		# StringVar : 
+		diff = StringVar() 
+		diff.set('')
+		x2 = StringVar() 
+		x2.set('')
+		z2 = StringVar() 
+		z2.set('')
+		listeState = StringVar() 
+		listeState.set('')
+		
+		# Boutons :  
+		B_Valider = Button(menu_jet, text = "Valider", fg = 'green',  command = lambda: Valider(bouton)).grid(row = 4, column = 0)
+		B_X = Button(menu_jet, text = "x", fg = 'red', command = lambda: Dejetyfication(bouton)).grid(row = 4, column = 3)
+
+		# Entry :
+		E_dificult = Entry(menu_jet, textvariable = diff, bg = 'white', width = 3)
+		E_dificult.grid(row = 0, column = 0)
+		E_x2 = Entry(menu_jet, textvariable = x2, bg = 'white', width = 3)
+		E_x2.grid(row = 0, column = 2)
+		E_z2 = Entry(menu_jet, textvariable = z2, bg = 'white', width = 3)
+		E_z2.grid(row = 0, column = 3)
+		labelListe = Label(menu_jet, textvariable = listeState, bg = 'white', width = 8)
+		labelListe.grid(row = 4 , column = 1)
+
+		if( type(self.box[self.x][self.y].Reponses[bouton].extend) == type(Extension(None, None, None, None))): # Si le bouton est deja extend on load :
+			diff.set(str(self.box[self.x][self.y].Reponses[bouton].extend.difficult))
+			x2.set(self.box[self.x][self.y].Reponses[bouton].extend.pos2.x)
+			z2.set(self.box[self.x][self.y].Reponses[bouton].extend.pos2.z)
+			liste.activate(doc[str(self.box[self.x][self.y].Reponses[bouton].extend.carac)])
+			listeState.set(str(liste.get(ACTIVE)))
+		
+
+		menu_jet.mainloop()
+
+	def Mike(self):
+		def Valider():
+			self.box[self.x][self.y].mikeTexte = mikeTexte.get()
+			menu_mike.destroy()
+
+		def Supprimer():
+			self.box[self.x][self.y].mikeTexte = False
+			menu_mike.destroy()
+
+		menu_mike = Toplevel(self.editor)
+		menu_mike['bg']='black' # On met le fond de couleur noir 
+		menu_mike.title("Configuration Mike") # On nomme la fenêtre 
+		menu_mike.geometry("400x175") # On définit une taille pour la fenêtre
+		menu_mike.resizable(0,0)
+		
+		mikeTexte = StringVar()
+
+		L_MikeTexte = Label(menu_mike, textvariable = mikeTexte, width = 49, height = 8, wraplength = 350)
+		L_MikeTexte.grid(columnspan = 4, row = 0, column = 0)
+		E_MikeTexte = Entry(menu_mike, textvariable = mikeTexte, width = 49) # Texte du PNJ 
+		E_MikeTexte.grid(columnspan = 4, row = 1, column = 0)
+
+		# Boutons valider
+		B_MkeValider = Button(menu_mike, text = "Valider", fg = 'green', command = Valider).grid(row = 4, column = 0)
+		B_MkeValider = Button(menu_mike, text = "Supprimer", fg = 'red',command = Supprimer).grid(row = 4, column = 3)
+
+		if (self.box[self.x][self.y].mikeTexte != False):
+			mikeTexte.set(str(self.box[self.x][self.y].mikeTexte))
+
+		menu_mike.mainloop()
+
+	def GoTo(self, newX, newY):
+		try:
+			print("Yolo")
+		except:
+			print("L'index n'existe pas !")
