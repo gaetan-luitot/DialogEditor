@@ -5,15 +5,11 @@
 #		- Make a Method to save an unfinished dialog but make sure that the exported file can't be use by the game because 
 #	it can create some errors if the object is not finished. So save the file as a different object that it can't be read by the game.
 
-# v 0.6
+# v 0.7
 # -> Commenter les classes
 
-# v 0.5
-# -> Créer une fonction Go to -> 
-
-# V 0.4
-# -> Ajouter un bouton quitter into retour au menu
-# -> Acutaliser les aides au dessus
+# v 0.6
+# -> Fonction pour les pos 2
 
 
 

@@ -43,6 +43,8 @@ class Interface:
 		self.texteRep1 = StringVar() # Texte de la réponse 1 actuel
 		self.texteRep2 = StringVar() # Texte de la réponse 2 actuel
 		self.texteRep3 = StringVar() # Texte de la réponse 3 actuel
+		self.XGoTo = StringVar()
+		self.YGoTo = StringVar()
 		self.texteDialogue = StringVar() # Texte du dialogue de la Scène ou du PNJ
 		self.texteDialogue.set("[Texte]")
 		self.x = 0 # x position actuel
@@ -123,6 +125,8 @@ class Interface:
 		self.E_FunctionRep1 = Entry(self.editor, textvariable = self.FunctionRep1, width = 10)
 		self.E_FunctionRep2 = Entry(self.editor, textvariable = self.FunctionRep2, width = 10)
 		self.E_FunctionRep3 = Entry(self.editor, textvariable = self.FunctionRep3, width = 10)
+		self.E_XGoto = Entry(self.editor, textvariable = self.XGoTo, width = 2)
+		self.E_YGoto = Entry(self.editor, textvariable = self.YGoTo, width = 2)
 
 
 		# Button :
@@ -138,6 +142,7 @@ class Interface:
 		self.ButtonRep2 = Button(self.editor, text = "Réponse 2", command = lambda: self.ApplyCurrent(1), width = 13) # Btn navigation : aller vers chainage suivant
 		self.ButtonRep3 = Button(self.editor, text = "Réponse 3", command = lambda: self.ApplyCurrent(2), width = 13) # Btn navigation : aller vers chainage suivant
 		self.B_Menu = Button(self.editor, text = "Menu", command = self.Menu)
+		self.B_Goto = Button(self.editor, text = "Go !", command = self.GoTo)
 
 		# CheckBox :
 		self.checkRep1 = Checkbutton(self.editor, text = "Cacher", variable = self.hiden1 , bg = 'white', activebackground = 'white', activeforeground = 'black', fg = 'black')
@@ -148,14 +153,14 @@ class Interface:
 		
 	def PackEditeur(self): # Update de tout les Widgets
 		# UI help :
-		self.TopHelp.grid(columnspan = 640, row = 0, column = 210, sticky = NW)
-		self.TopHelpTwo.grid(columnspan = 640, row = 1, column = 210, sticky = NW)
+		self.TopHelp.grid(columnspan = 640, rowspan = 360, row = 0, column = 210, sticky = NW)
+		self.TopHelpTwo.grid(columnspan = 640, rowspan = 360, row = 1, column = 210, sticky = NW)
 		self.InfoPosVar.grid(columnspan = 640, rowspan = 360, row = 100, column = 0, sticky = NW)
 
 		# UI Other:
 		self.B_Save.grid(columnspan = 640, rowspan = 360, row = 0, column = 575, sticky = NW)
 		self.B_Return.grid(columnspan = 640, rowspan = 360, row = 0, column = 0, sticky = NW)
-		self.B_Debug.grid(columnspan = 640, rowspan = 360, row = 10, column = 565, sticky = NW)
+		self.B_Debug.grid(columnspan = 640, rowspan = 360, row = 20, column = 565, sticky = NW)
 		self.B_Delete.grid(columnspan = 640, rowspan = 360, row = 20, column = 0, sticky = NW)
 
 		# Texte :
@@ -171,6 +176,7 @@ class Interface:
 		self.B_Jet2.grid(columnspan = 640, rowspan = 360, row = 226, column = 185, sticky = NW)
 		self.B_Jet3.grid(columnspan = 640, rowspan = 360, row = 291, column = 185, sticky = NW)
 		self.B_Menu.grid(columnspan = 640, rowspan = 360, row = 0, column = 75, sticky = NW)
+		self.B_Goto.grid(columnspan = 640, rowspan = 360, row = 0, column = 450, sticky = NW)
 		# CheckBox Réponses : 
 		self.checkRep1.grid(columnspan = 640, rowspan = 360, row = 165, column = 235, sticky = NW)
 		self.checkRep2.grid(columnspan = 640, rowspan = 360, row = 231, column = 235, sticky = NW)
@@ -188,6 +194,8 @@ class Interface:
 		self.E_FunctionRep1.grid(columnspan = 640, rowspan = 360, row = 165, column = 330, sticky = NW)
 		self.E_FunctionRep2.grid(columnspan = 640, rowspan = 360, row = 231, column = 330, sticky = NW)
 		self.E_FunctionRep3.grid(columnspan = 640, rowspan = 360, row = 296, column = 330, sticky = NW)
+		self.E_XGoto.grid(columnspan = 640, rowspan = 360, row = 12, column = 450, sticky = NW)
+		self.E_YGoto.grid(columnspan = 640, rowspan = 360, row = 12, column = 480, sticky = NW)
 
 	def ClearEditeur(self):
 		print("I: Déchargement de l'interface d'éditions")
@@ -223,6 +231,9 @@ class Interface:
 		self.E_FunctionRep2.grid_forget()
 		self.E_FunctionRep3.grid_forget()
 		self.B_Menu.grid_forget()
+		self.E_XGoto.grid_forget()
+		self.E_YGoto.grid_forget()
+		self.B_Goto.grid_forget()
 
 	def Return(self):
 		if (self.x != 0):
@@ -469,6 +480,7 @@ class Interface:
 	def Save(self):
 		self.SetToBox()
 		self.box.Save()
+		self.GetFromBox()
 		print("I: Sauvegarde effectuée")
 		
 	def ZtoYchai(self, index, indiceToFind):
@@ -586,68 +598,76 @@ class Interface:
 		
 
 	def Jet(self, bouton):
-		def Valider(bouton):
-			print(liste.get(ACTIVE))
-			self.box[self.x][self.y].Reponses[bouton].extend = Extension(liste.get(ACTIVE), E_dificult.get(), E_x2.get(), E_z2.get())
-			menu_jet.destroy()
+		listeTest = [self.Rep1.get(), self.Rep2.get(), self.Rep1.get()]
+		if (listeTest[bouton] != ''):
+			self.SetToBox()
+			self.Debug()
+			def Valider(bouton):
+				if(listeState.get() != '' and diff.get() != ''):
+					if (x2.get() == '' and z2.get() == ''):
+						self.box[self.x][self.y].Reponses[bouton].extend = Extension(listeState.get(), diff.get(), (self.x +1), self.box.GetIndice(self.x + 1))
+						self.box.Ajouter(Chainage(Chainage.d_texte, Chainage.d_Reponses, self.box.GetIndice(self.x +1)), self.x + 1)
+						menu_jet.destroy()
+					elif (x2.get() != '' and z2.get() != ''):
+						self.box[self.x][self.y].Reponses[bouton].extend = Extension(listeState.get(), diff.get(), x2.get(), z2.get())
+						menu_jet.destroy()
 
-		def Dejetyfication(bouton):
-			self.box[self.x][self.y].Reponses[bouton].extend = False
-			menu_jet.destroy()
+			def Dejetyfication(bouton):
+				self.box[self.x][self.y].Reponses[bouton].extend = False
+				menu_jet.destroy()
 
-		def ActualiserListe(obj):
-			print(str(obj.widget.curselection()[0]))
-			listeState.set(liste.get(str(obj.widget.curselection()[0])))
+			def ActualiserListe(obj):
+				listeState.set(liste.get(str(obj.widget.curselection()[0])))
 
-		# Création d'une nouvelle fenètre
-		menu_jet = Toplevel(self.editor)
-		menu_jet['bg']='black' # On met le fond de couleur noir 
-		menu_jet.title("Configuration Jet") # On nomme la fenêtre 
-		menu_jet.geometry("200x100") # On définit une taille pour la fenêtre
-		menu_jet.resizable(0,0)
-		
-		# ListBox :
-		liste = Listbox(menu_jet, height = 3, width = 8)
-		liste.bind('<<ListboxSelect>>', ActualiserListe)
-		liste.insert(1, "Physique")
-		liste.insert(2, "Mental")
-		liste.insert(3, "Social")
-		doc = {"Social" : 2, "Mental" : 1, "Physique" : 0}
-		liste.grid(rowspan = 3, row = 0, column = 1, sticky = NE)
+			# Création d'une nouvelle fenètre
+			menu_jet = Toplevel(self.editor)
+			menu_jet['bg']='black' # On met le fond de couleur noir 
+			menu_jet.title("Configuration Jet") # On nomme la fenêtre 
+			menu_jet.geometry("200x100") # On définit une taille pour la fenêtre
+			menu_jet.resizable(0,0)
+			
+			# ListBox :
+			liste = Listbox(menu_jet, height = 3, width = 8)
+			liste.bind('<<ListboxSelect>>', ActualiserListe)
+			liste.insert(1, "Physique")
+			liste.insert(2, "Mental")
+			liste.insert(3, "Social")
+			doc = {"Social" : 2, "Mental" : 1, "Physique" : 0}
+			liste.grid(rowspan = 3, row = 0, column = 1, sticky = NE)
 
-		# StringVar : 
-		diff = StringVar() 
-		diff.set('')
-		x2 = StringVar() 
-		x2.set('')
-		z2 = StringVar() 
-		z2.set('')
-		listeState = StringVar() 
-		listeState.set('')
-		
-		# Boutons :  
-		B_Valider = Button(menu_jet, text = "Valider", fg = 'green',  command = lambda: Valider(bouton)).grid(row = 4, column = 0)
-		B_X = Button(menu_jet, text = "x", fg = 'red', command = lambda: Dejetyfication(bouton)).grid(row = 4, column = 3)
+			# StringVar : 
+			diff = StringVar() 
+			diff.set('')
+			x2 = StringVar() 
+			x2.set('')
+			z2 = StringVar() 
+			z2.set('')
+			listeState = StringVar() 
+			listeState.set('')
+			
+			# Boutons :  
+			B_Valider = Button(menu_jet, text = "Valider", fg = 'green',  command = lambda: Valider(bouton)).grid(row = 4, column = 0)
+			B_X = Button(menu_jet, text = "x", fg = 'red', command = lambda: Dejetyfication(bouton)).grid(row = 4, column = 3)
 
-		# Entry :
-		E_dificult = Entry(menu_jet, textvariable = diff, bg = 'white', width = 3)
-		E_dificult.grid(row = 0, column = 0)
-		E_x2 = Entry(menu_jet, textvariable = x2, bg = 'white', width = 3)
-		E_x2.grid(row = 0, column = 2)
-		E_z2 = Entry(menu_jet, textvariable = z2, bg = 'white', width = 3)
-		E_z2.grid(row = 0, column = 3)
-		labelListe = Label(menu_jet, textvariable = listeState, bg = 'white', width = 8)
-		labelListe.grid(row = 4 , column = 1)
+			# Entry :
+			E_dificult = Entry(menu_jet, textvariable = diff, bg = 'white', width = 3)
+			E_dificult.grid(row = 0, column = 0)
+			E_x2 = Entry(menu_jet, textvariable = x2, bg = 'white', width = 3)
+			E_x2.grid(row = 0, column = 2)
+			E_z2 = Entry(menu_jet, textvariable = z2, bg = 'white', width = 3)
+			E_z2.grid(row = 0, column = 3)
+			labelListe = Label(menu_jet, textvariable = listeState, bg = 'white', width = 8)
+			labelListe.grid(row = 4 , column = 1)
 
-		if( type(self.box[self.x][self.y].Reponses[bouton].extend) == type(Extension(None, None, None, None))): # Si le bouton est deja extend on load :
-			diff.set(str(self.box[self.x][self.y].Reponses[bouton].extend.difficult))
-			x2.set(self.box[self.x][self.y].Reponses[bouton].extend.pos2.x)
-			z2.set(self.box[self.x][self.y].Reponses[bouton].extend.pos2.z)
-			liste.activate(doc[str(self.box[self.x][self.y].Reponses[bouton].extend.carac)])
-			listeState.set(str(liste.get(ACTIVE)))
-		
+			if( type(self.box[self.x][self.y].Reponses[bouton].extend) == type(Extension(None, None, None, None))): # Si le bouton est deja extend on load :
+				diff.set(str(self.box[self.x][self.y].Reponses[bouton].extend.difficult))
+				x2.set(self.box[self.x][self.y].Reponses[bouton].extend.pos2.x)
+				z2.set(self.box[self.x][self.y].Reponses[bouton].extend.pos2.z)
+				liste.activate(doc[str(self.box[self.x][self.y].Reponses[bouton].extend.carac)])
+				listeState.set(str(liste.get(ACTIVE)))
+			
 
-		menu_jet.mainloop()
+			menu_jet.mainloop()
 
 	def Mike(self):
 		def Valider():
@@ -695,24 +715,21 @@ class Interface:
 		return taille
 
 
-	def GoTo(self, newX, newY):
-		try:
-			temp = self.box[newX][newY]
-			print("Yolo")
-		except:
-			print("L'index n'existe pas !")
-		else:
-			print("Go to -> ")
-
-
-"""
-def Return(self):
-		if (self.x != 0):
-			self.SetToBox()
-			self.x = int(self.debugArray[-1][0].x)
-			self.y = int(self.debugArray[-1][0].z)
-			self.pos.set("x : " + str(self.x) + "\ny : " + str(self.y))
-			del self.debugArray[-1]
-			self.GetFromBox()
-			self.Debug()
-"""
+	def GoTo(self):
+		if (self.XGoTo.get() != '' and self.YGoTo.get() != ''):
+			newX = int(self.XGoTo.get())
+			newY = int(self.YGoTo.get())
+			try:
+				
+				temp = self.box[newX][newY]
+			except:
+				print("E: L'index n'existe pas !")
+			else:
+				self.SetToBox()
+				self.debugArray.append([Vecteur(self.x, self.y) ,str(Vecteur(self.x, self.y))])
+				self.x = newX
+				self.y = newY
+				self.pos.set("x : " + str(self.x) + "\ny : " + str(self.y))
+				self.GetFromBox()
+			self.XGoTo.set('')
+			self.YGoTo.set('')
