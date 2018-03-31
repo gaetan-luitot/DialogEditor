@@ -7,11 +7,12 @@ from c_vecteur import Vecteur # On import notre classe Vecteur
 
 class Reponse: # On définit notre classe, que l'on appelle "Reponse"
 
-	def __init__(self, texte, x, z, hiden, extension = False):#, end): # Constructeur :
+	def __init__(self, texte, x, z, hiden, extension = False, function = False):#, end): # Constructeur :
 		self.texte = texte # La réponse que le joueur à choisi
 		self.pos = Vecteur(x, z) # La position du Chainage qui répond à la réponse du PJ
 		self.extend = extension
 		self.hiden = hiden
+		self.function = function
 		
 class Extension: # On définit notre classe, que l'on appelle "Reponse"
 

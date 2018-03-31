@@ -12,11 +12,9 @@
 # -> Créer une fonction Go to -> 
 
 # V 0.4
-# -> Référence aux fonctions pour le jeu, tel réponse va lancer tel fonctions
+# -> Ajouter un bouton quitter into retour au menu
+# -> Acutaliser les aides au dessus
 
-# v 0.3
-# -> Ajouter toute les strings pour une boite (mikeZ, bool, ect...)
-# -> Ajouter les réponses avec un jets
 
 
 

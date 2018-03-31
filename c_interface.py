@@ -35,6 +35,9 @@ class Interface:
 		self.yRep2 = StringVar()
 		self.xRep3 = StringVar()
 		self.yRep3 = StringVar()
+		self.FunctionRep1 = StringVar()
+		self.FunctionRep2 = StringVar()
+		self.FunctionRep3 = StringVar()
 		self.texteRep1 = StringVar() # Texte de la réponse 1 actuel
 		self.texteRep2 = StringVar() # Texte de la réponse 2 actuel
 		self.texteRep3 = StringVar() # Texte de la réponse 3 actuel
@@ -115,6 +118,10 @@ class Interface:
 		self.EntryyRep2 = Entry(self.editor, textvariable = self.yRep2, width = 2)
 		self.EntryxRep3 = Entry(self.editor, textvariable = self.xRep3, width = 2)
 		self.EntryyRep3 = Entry(self.editor, textvariable = self.yRep3, width = 2)
+		self.E_FunctionRep1 = Entry(self.editor, textvariable = self.FunctionRep1, width = 10)
+		self.E_FunctionRep2 = Entry(self.editor, textvariable = self.FunctionRep2, width = 10)
+		self.E_FunctionRep3 = Entry(self.editor, textvariable = self.FunctionRep3, width = 10)
+
 
 		# Button :
 		self.B_Save = Button(self.editor, text = "Save", command = self.Save) # Bouton pour sauvegarder la boite
@@ -152,26 +159,31 @@ class Interface:
 		self.Texte.grid(columnspan = 640,row = 150, column = 64, sticky = NW)
 		self.TexteLabel.grid(columnspan = 640, rowspan = 360,row = 40, column = 65, sticky = NW)
 
-		# Réponse :
-		self.Rep1.grid(columnspan = 640, rowspan = 360, row = 197, column = 30, sticky = NW)
-		self.Rep2.grid(columnspan = 640, rowspan = 360, row = 263, column = 30, sticky = NW)
-		self.Rep3.grid(columnspan = 640, rowspan = 360, row = 328, column = 30, sticky = NW)
+		# widgets "Button" pour les Réponses :
 		self.ButtonRep1.grid(columnspan = 640, rowspan = 360, row = 160, column = 0, sticky = NW)
 		self.ButtonRep2.grid(columnspan = 640, rowspan = 360, row = 226, column = 0, sticky = NW)
 		self.ButtonRep3.grid(columnspan = 640, rowspan = 360, row = 291, column = 0, sticky = NW)
+		self.B_Mike.grid(columnspan = 640, rowspan = 360, row = 100, column = 580, sticky = NW)
+		self.B_Jet1.grid(columnspan = 640, rowspan = 360, row = 160, column = 185, sticky = NW)
+		self.B_Jet2.grid(columnspan = 640, rowspan = 360, row = 226, column = 185, sticky = NW)
+		self.B_Jet3.grid(columnspan = 640, rowspan = 360, row = 291, column = 185, sticky = NW)
+		# CheckBox Réponses : 
+		self.checkRep1.grid(columnspan = 640, rowspan = 360, row = 165, column = 235, sticky = NW)
+		self.checkRep2.grid(columnspan = 640, rowspan = 360, row = 231, column = 235, sticky = NW)
+		self.checkRep3.grid(columnspan = 640, rowspan = 360, row = 296, column = 235, sticky = NW)
+		# Entry Réponses :
+		self.Rep1.grid(columnspan = 640, rowspan = 360, row = 197, column = 30, sticky = NW)
+		self.Rep2.grid(columnspan = 640, rowspan = 360, row = 263, column = 30, sticky = NW)
+		self.Rep3.grid(columnspan = 640, rowspan = 360, row = 328, column = 30, sticky = NW)
 		self.EntryxRep1.grid(columnspan = 640, rowspan = 360, row = 165, column = 120, sticky = NW)
 		self.EntryyRep1.grid(columnspan = 640, rowspan = 360, row = 165, column = 150, sticky = NW)
 		self.EntryxRep2.grid(columnspan = 640, rowspan = 360, row = 231, column = 120, sticky = NW)
 		self.EntryyRep2.grid(columnspan = 640, rowspan = 360, row = 231, column = 150, sticky = NW)
 		self.EntryxRep3.grid(columnspan = 640, rowspan = 360, row = 296, column = 120, sticky = NW)
 		self.EntryyRep3.grid(columnspan = 640, rowspan = 360, row = 296, column = 150, sticky = NW)
-		self.B_Mike.grid(columnspan = 640, rowspan = 360, row = 100, column = 580, sticky = NW)
-		self.B_Jet1.grid(columnspan = 640, rowspan = 360, row = 160, column = 190, sticky = NW)
-		self.B_Jet2.grid(columnspan = 640, rowspan = 360, row = 226, column = 190, sticky = NW)
-		self.B_Jet3.grid(columnspan = 640, rowspan = 360, row = 291, column = 190, sticky = NW)
-		self.checkRep1.grid(columnspan = 640, rowspan = 360, row = 165, column = 235, sticky = NW)
-		self.checkRep2.grid(columnspan = 640, rowspan = 360, row = 231, column = 235, sticky = NW)
-		self.checkRep3.grid(columnspan = 640, rowspan = 360, row = 296, column = 235, sticky = NW)
+		self.E_FunctionRep1.grid(columnspan = 640, rowspan = 360, row = 165, column = 330, sticky = NW)
+		self.E_FunctionRep2.grid(columnspan = 640, rowspan = 360, row = 231, column = 330, sticky = NW)
+		self.E_FunctionRep3.grid(columnspan = 640, rowspan = 360, row = 296, column = 330, sticky = NW)
 
 	def ClearEditeur(self):
 		print("I: Déchargement de l'interface d'éditions")
@@ -218,6 +230,9 @@ class Interface:
 	def SetToBox(self): # On assignent les infos rentrés dans les Entrys à notre variables chainageActuel
 		listeTemporaire = []
 		listeExtend = []
+		listeFunction = []
+
+		# Configuration de listeExtend :
 		try:
 			listeExtend.append(self.chainageActuel.Reponses[0].extend)
 		except:
@@ -231,44 +246,70 @@ class Interface:
 		except:
 			listeExtend.append(False)
 
+		# Configuration de listeFunction :
+		try:
+			if (self.FunctionRep1.get() != ''):
+				listeFunction.append(self.FunctionRep1.get())
+			else :
+				listeFunction.append(False)
+		except:
+			raise
+			listeFunction.append(False)
+		try:
+			if (self.FunctionRep2.get() != ''):
+				listeFunction.append(self.FunctionRep2.get())
+			else :
+				listeFunction.append(False)
+		except:
+			raise
+			listeFunction.append(False)
+		try:
+			if (self.FunctionRep3.get() != ''):
+				listeFunction.append(self.FunctionRep3.get())
+			else :
+				listeFunction.append(False)
+		except:
+			listeFunction.append(False)
+
+
 		if self.texteRep1.get() != '':
 			try:
 				if (self.chainageActuel.Reponses[0].pos.z != None): # On regarde si notre réponse est déjà configuré :
 					if (self.xRep1.get() != '' and self.yRep1.get() != ''): # Si on veut utiliser une boite plusieurs fois
-						listeTemporaire.append(Reponse(self.texteRep1.get(), int(self.xRep1.get()), int(self.yRep1.get()), bool(self.hiden1.get()),listeExtend[0]))
+						listeTemporaire.append(Reponse(self.texteRep1.get(), int(self.xRep1.get()), int(self.yRep1.get()), bool(self.hiden1.get()), listeExtend[0], listeFunction[0]))
 					else:
-						listeTemporaire.append(Reponse(self.texteRep1.get(), self.chainageActuel.Reponses[0].pos.x, self.chainageActuel.Reponses[0].pos.z, bool(self.hiden1.get()), listeExtend[0]))
+						listeTemporaire.append(Reponse(self.texteRep1.get(), self.chainageActuel.Reponses[0].pos.x, self.chainageActuel.Reponses[0].pos.z, bool(self.hiden1.get()), listeExtend[0], listeFunction[0]))
 				else:
 					if (self.xRep1.get() != '' and self.yRep1.get() != ''):
-						listeTemporaire.append(Reponse(self.texteRep1.get(), int(self.xRep1.get()), int(self.yRep1.get()), bool(self.hiden1.get()), listeExtend[0]))
+						listeTemporaire.append(Reponse(self.texteRep1.get(), int(self.xRep1.get()), int(self.yRep1.get()), bool(self.hiden1.get()), listeExtend[0], listeFunction[0]))
 					else:
-						listeTemporaire.append(Reponse(self.texteRep1.get(), (self.x +1), self.box.GetIndice(self.x + 1), bool(self.hiden1.get()), listeExtend[0]))
+						listeTemporaire.append(Reponse(self.texteRep1.get(), (self.x +1), self.box.GetIndice(self.x + 1), bool(self.hiden1.get()), listeExtend[0], listeFunction[0]))
 						self.box.Ajouter(Chainage(Chainage.d_texte, Chainage.d_Reponses, self.box.GetIndice(self.x +1)), self.x + 1)
 			except:
 				if (self.xRep1.get() != '' and self.yRep1.get() != ''):
-					listeTemporaire.append(Reponse(self.texteRep1.get(), int(self.xRep1.get()),  int(self.yRep1.get()), bool(self.hiden1.get()), listeExtend[0]))
+					listeTemporaire.append(Reponse(self.texteRep1.get(), int(self.xRep1.get()),  int(self.yRep1.get()), bool(self.hiden1.get()), listeExtend[0], listeFunction[0]))
 				else:
-					listeTemporaire.append(Reponse(self.texteRep1.get(), (self.x +1), self.box.GetIndice(self.x + 1), bool(self.hiden1.get()), listeExtend[0]))
+					listeTemporaire.append(Reponse(self.texteRep1.get(), (self.x +1), self.box.GetIndice(self.x + 1), bool(self.hiden1.get()), listeExtend[0], listeFunction[0]))
 					self.box.Ajouter(Chainage(Chainage.d_texte, Chainage.d_Reponses, self.box.GetIndice(self.x +1)), self.x + 1)
 
 		if self.texteRep2.get() != '':
 			try:
 				if (self.chainageActuel.Reponses[1].pos.z != None): # On regarde si notre réponse est déjà configuré :
 					if (self.xRep2.get() != '' and self.yRep2.get() != ''): # Si on veut utiliser une boite plusieurs fois
-						listeTemporaire.append(Reponse(self.texteRep2.get(), int(self.xRep2.get()), int(self.yRep2.get()), bool(self.hiden2.get()), listeExtend[1]))
+						listeTemporaire.append(Reponse(self.texteRep2.get(), int(self.xRep2.get()), int(self.yRep2.get()), bool(self.hiden2.get()), listeExtend[1], listeFunction[1]))
 					else:
-						listeTemporaire.append(Reponse(self.texteRep2.get(), self.chainageActuel.Reponses[1].pos.x, self.chainageActuel.Reponses[1].pos.z, bool(self.hiden2.get()), listeExtend[1]))
+						listeTemporaire.append(Reponse(self.texteRep2.get(), self.chainageActuel.Reponses[1].pos.x, self.chainageActuel.Reponses[1].pos.z, bool(self.hiden2.get()), listeExtend[1], listeFunction[1]))
 				else:
 					if (self.xRep2.get() != '' and self.yRep2.get() != ''):
-						listeTemporaire.append(Reponse(self.texteRep2.get(), int(self.xRep2.get()), int(self.yRep2.get()), bool(self.hiden2.get()), listeExtend[1]))
+						listeTemporaire.append(Reponse(self.texteRep2.get(), int(self.xRep2.get()), int(self.yRep2.get()), bool(self.hiden2.get()), listeExtend[1], listeFunction[1]))
 					else:
-						listeTemporaire.append(Reponse(self.texteRep2.get(), (self.x +1), self.box.GetIndice(self.x + 1), bool(self.hiden2.get()), listeExtend[1]))
+						listeTemporaire.append(Reponse(self.texteRep2.get(), (self.x +1), self.box.GetIndice(self.x + 1), bool(self.hiden2.get()), listeExtend[1], listeFunction[1]))
 						self.box.Ajouter(Chainage(Chainage.d_texte, Chainage.d_Reponses, self.box.GetIndice(self.x +1)), self.x + 1)
 			except:
 				if (self.xRep2.get() != '' and self.yRep2.get() != ''):
-					listeTemporaire.append(Reponse(self.texteRep2.get(), int(self.xRep2.get()),  int(self.yRep2.get()), bool(self.hiden2.get()), listeExtend[1]))
+					listeTemporaire.append(Reponse(self.texteRep2.get(), int(self.xRep2.get()),  int(self.yRep2.get()), bool(self.hiden2.get()), listeExtend[1], listeFunction[1]))
 				else:
-					listeTemporaire.append(Reponse(self.texteRep2.get(), (self.x +1), self.box.GetIndice(self.x + 1), bool(self.hiden2.get()), listeExtend[1]))
+					listeTemporaire.append(Reponse(self.texteRep2.get(), (self.x +1), self.box.GetIndice(self.x + 1), bool(self.hiden2.get()), listeExtend[1], listeFunction[1]))
 					self.box.Ajouter(Chainage(Chainage.d_texte, Chainage.d_Reponses, self.box.GetIndice(self.x +1)), self.x + 1)
 
 
@@ -277,20 +318,20 @@ class Interface:
 			try:
 				if (self.chainageActuel.Reponses[2].pos.z != None): # On regarde si notre réponse est déjà configuré :
 					if (self.xRep3.get() != '' and self.yRep3.get() != ''): # Si on veut utiliser une boite plusieurs fois
-						listeTemporaire.append(Reponse(self.texteRep3.get(), int(self.xRep3.get()), int(self.yRep3.get()), bool(self.hiden3.get()), listeExtend[2]))
+						listeTemporaire.append(Reponse(self.texteRep3.get(), int(self.xRep3.get()), int(self.yRep3.get()), bool(self.hiden3.get()), listeExtend[2], listeFunction[2]))
 					else:
-						listeTemporaire.append(Reponse(self.texteRep3.get(), self.chainageActuel.Reponses[2].pos.x, self.chainageActuel.Reponses[2].pos.z, bool(self.hiden3.get()), listeExtend[2]))
+						listeTemporaire.append(Reponse(self.texteRep3.get(), self.chainageActuel.Reponses[2].pos.x, self.chainageActuel.Reponses[2].pos.z, bool(self.hiden3.get()), listeExtend[2], listeFunction[2]))
 				else:
 					if (self.xRep3.get() != '' and self.yRep3.get() != ''):
-						listeTemporaire.append(Reponse(self.texteRep3.get(), int(self.xRep3.get()), int(self.yRep3.get()), bool(self.hiden3.get()), listeExtend[2]))
+						listeTemporaire.append(Reponse(self.texteRep3.get(), int(self.xRep3.get()), int(self.yRep3.get()), bool(self.hiden3.get()), listeExtend[2], listeFunction[2]))
 					else:
-						listeTemporaire.append(Reponse(self.texteRep3.get(), (self.x +1), self.box.GetIndice(self.x + 1), bool(self.hiden3.get()), listeExtend[2]))
+						listeTemporaire.append(Reponse(self.texteRep3.get(), (self.x +1), self.box.GetIndice(self.x + 1), bool(self.hiden3.get()), listeExtend[2], listeFunction[2]))
 						self.box.Ajouter(Chainage(Chainage.d_texte, Chainage.d_Reponses, self.box.GetIndice(self.x +1)), self.x + 1)
 			except:
 				if (self.xRep3.get() != '' and self.yRep3.get() != ''):
-					listeTemporaire.append(Reponse(self.texteRep3.get(), int(self.xRep3.get()),  int(self.yRep3.get()), bool(self.hiden3.get()), listeExtend[2]))
+					listeTemporaire.append(Reponse(self.texteRep3.get(), int(self.xRep3.get()),  int(self.yRep3.get()), bool(self.hiden3.get()), listeExtend[2], listeFunction[2]))
 				else:
-					listeTemporaire.append(Reponse(self.texteRep3.get(), (self.x +1), self.box.GetIndice(self.x + 1), bool(self.hiden3.get()), listeExtend[2]))
+					listeTemporaire.append(Reponse(self.texteRep3.get(), (self.x +1), self.box.GetIndice(self.x + 1), bool(self.hiden3.get()), listeExtend[2], listeFunction[2]))
 					self.box.Ajouter(Chainage(Chainage.d_texte, Chainage.d_Reponses, self.box.GetIndice(self.x +1)), self.x + 1)
 
 
@@ -309,7 +350,7 @@ class Interface:
 		try: # On essaye d'obtenir l'index :
 			self.chainageActuel = self.box[indexX][indexY]
 		except: # Si il n'existe pas on le créer:
-			self.box.Ajouter(Chainage(Chainage.d_texte, Chainage.d_Reponses, self.box.GetIndice(indexX)), self.x)
+			self.box.Ajouter(Chainage(Chainage.d_texte, Chainage.d_Reponses, self.box.GetIndice(indexX)), indexX)
 			self.chainageActuel = self.box[indexX][indexY]
 		finally: # Puis dans tout les cas on actualise les widgets :
 			self.texteDialogue.set(self.chainageActuel.texte)
@@ -317,52 +358,60 @@ class Interface:
 				self.texteRep1.set(self.chainageActuel.Reponses[0].texte)
 				self.xRep1.set(self.chainageActuel.Reponses[0].pos.x)
 				self.yRep1.set(self.chainageActuel.Reponses[0].pos.z)
+				if (self.box[indexX][indexY].Reponses[0].function != False):
+					self.FunctionRep1.set(str(self.box[indexX][indexY].Reponses[0].function))
+				else:
+					self.FunctionRep1.set('')
+				if (self.box[indexX][indexY].Reponses[0].hiden == True):
+					self.checkRep1.select()
+				else:
+					self.checkRep1.deselect()
 			else:
 				self.texteRep1.set('')
 				self.xRep1.set('')
 				self.yRep1.set('')
+				self.FunctionRep1.set('')
+				self.checkRep1.deselect()
 
 			if len(self.chainageActuel.Reponses) > 1:
 				self.texteRep2.set(self.chainageActuel.Reponses[1].texte)
 				self.xRep2.set(self.chainageActuel.Reponses[1].pos.x)
 				self.yRep2.set(self.chainageActuel.Reponses[1].pos.z)
+				if (self.box[indexX][indexY].Reponses[1].function != False):
+					self.FunctionRep2.set(str(self.box[indexX][indexY].Reponses[1].function))
+				else:
+					self.FunctionRep2.set('')
+				if (self.box[indexX][indexY].Reponses[1].hiden == True):
+					self.checkRep2.select()
+				else:
+					self.checkRep2.deselect()
 			else:
 				self.texteRep2.set('')
 				self.xRep2.set('')
 				self.yRep2.set('')
+				self.FunctionRep2.set('')
+				self.checkRep2.deselect()
 
 			if len(self.chainageActuel.Reponses) > 2:
 				self.texteRep3.set(self.chainageActuel.Reponses[2].texte)
 				self.xRep3.set(self.chainageActuel.Reponses[2].pos.x)
 				self.yRep3.set(self.chainageActuel.Reponses[2].pos.z)
+				if (self.box[indexX][indexY].Reponses[2].function != False):
+					self.FunctionRep3.set(str(self.box[indexX][indexY].Reponses[2].function))
+				else:
+					self.FunctionRep3.set('')
+				if (self.box[indexX][indexY].Reponses[2].hiden == True):
+					self.checkRep3.select()
+				else:
+					self.checkRep3.deselect()
 			else:
 				self.texteRep3.set('')
 				self.xRep3.set('')
 				self.yRep3.set('')
-
-			try:
-				if (self.box[self.x][self.y].Reponses[0].hiden == True):
-					self.checkRep1.select()
-				else:
-					self.checkRep1.deselect()
-			except:
-				self.checkRep1.deselect()
-
-			try:
-				if (self.box[self.x][self.y].Reponses[1].hiden == True):
-					self.checkRep2.select()
-				else:
-					self.checkRep2.deselect()
-			except:
-				self.checkRep2.deselect()
-
-			try:
-				if (self.box[self.x][self.y].Reponses[2].hiden == True):
-					self.checkRep3.select()
-				else:
-					self.checkRep3.deselect()
-			except:
+				self.FunctionRep3.set('')
 				self.checkRep3.deselect()
+
+
 		
 	def LoadScene(self, nomDuFichier):
 		try:
