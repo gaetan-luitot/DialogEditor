@@ -84,7 +84,14 @@ class Boite:
 		except: # Si c'est le premier :
 			return 0
 
-	def Len(self):
+	def Lenx(self):
 		return len(self._tableau)
+
+	def Len(self):
+		taille = 0
+		for x in range(0, len(self._tableau)):
+			for y in range(0, len(self._tableau[x])):
+				taille += 1
+		return taille
 
 

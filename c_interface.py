@@ -29,6 +29,8 @@ class Interface:
 		# Variables :
 		self.debugArray = []
 		self.box = Boite("default")
+		self.nbBox = StringVar()
+		self.nbBoxRep = StringVar()
 		self.xRep1 = StringVar()
 		self.yRep1 = StringVar()
 		self.xRep2 = StringVar()
@@ -102,8 +104,8 @@ class Interface:
 	def LoadEditeur(self):
 		print("I: Chargement de l'interface d'édition")
 		# LabelFrame :
-		self.TopHelp = Label(self.editor, text = 'Nombres de Boites :', bg = 'white', width = 20) # Help : Nombre de chainages crées
-		self.TopHelpTwo = Label(self.editor, text = 'Info pour vous aider 2 :', bg = 'white', width = 20) # Help : [à définir]
+		self.TopHelp = Label(self.editor, textvariable = self.nbBox, bg = 'white', width = 20) # Help : Nombre de chainages crées
+		self.TopHelpTwo = Label(self.editor, textvariable = self.nbBoxRep, bg = 'white', width = 20) # Help : [à définir]
 		self.TexteLabel = Label(self.editor, textvariable = self.texteDialogue, bg = 'white', width = 60, height = 6, wraplength = 480, anchor = NW) # Affichage du texte écrit
 		self.InfoPosVar = Label(self.editor, textvariable = self.pos, bg = 'white', width = 5, height = 2) # Help : Position actuel
 
@@ -135,6 +137,7 @@ class Interface:
 		self.ButtonRep1 = Button(self.editor, text = "Réponse 1", command = lambda: self.ApplyCurrent(0), width = 13) # Btn navigation : aller vers chainage suivant
 		self.ButtonRep2 = Button(self.editor, text = "Réponse 2", command = lambda: self.ApplyCurrent(1), width = 13) # Btn navigation : aller vers chainage suivant
 		self.ButtonRep3 = Button(self.editor, text = "Réponse 3", command = lambda: self.ApplyCurrent(2), width = 13) # Btn navigation : aller vers chainage suivant
+		self.B_Menu = Button(self.editor, text = "Menu", command = self.Menu)
 
 		# CheckBox :
 		self.checkRep1 = Checkbutton(self.editor, text = "Cacher", variable = self.hiden1 , bg = 'white', activebackground = 'white', activeforeground = 'black', fg = 'black')
@@ -167,6 +170,7 @@ class Interface:
 		self.B_Jet1.grid(columnspan = 640, rowspan = 360, row = 160, column = 185, sticky = NW)
 		self.B_Jet2.grid(columnspan = 640, rowspan = 360, row = 226, column = 185, sticky = NW)
 		self.B_Jet3.grid(columnspan = 640, rowspan = 360, row = 291, column = 185, sticky = NW)
+		self.B_Menu.grid(columnspan = 640, rowspan = 360, row = 0, column = 75, sticky = NW)
 		# CheckBox Réponses : 
 		self.checkRep1.grid(columnspan = 640, rowspan = 360, row = 165, column = 235, sticky = NW)
 		self.checkRep2.grid(columnspan = 640, rowspan = 360, row = 231, column = 235, sticky = NW)
@@ -190,21 +194,40 @@ class Interface:
 		self.TopHelp.grid_forget()
 		self.TopHelpTwo.grid_forget()
 		self.InfoPosVar.grid_forget()
-		self.Save.grid_forget()
-		self.Return.grid_forget()
+		self.B_Save.grid_forget()
+		self.B_Return.grid_forget()
+		self.B_Debug.grid_forget()
+		self.B_Delete.grid_forget()
 		self.Texte.grid_forget()
 		self.TexteLabel.grid_forget()
-		self.Rep1.grid_forget()
-		self.Rep2.grid_forget()
-		self.Rep3.grid_forget()
 		self.ButtonRep1.grid_forget()
 		self.ButtonRep2.grid_forget()
 		self.ButtonRep3.grid_forget()
+		self.B_Mike.grid_forget()
+		self.B_Jet1.grid_forget()
+		self.B_Jet2.grid_forget()
+		self.B_Jet3.grid_forget()
+		self.checkRep1.grid_forget()
+		self.checkRep2.grid_forget()
+		self.checkRep3.grid_forget()
+		self.Rep1.grid_forget()
+		self.Rep2.grid_forget()
+		self.Rep3.grid_forget()
+		self.EntryxRep1.grid_forget()
+		self.EntryyRep1.grid_forget()
+		self.EntryxRep2.grid_forget()
+		self.EntryyRep2.grid_forget()
+		self.EntryxRep3.grid_forget()
+		self.EntryyRep3.grid_forget()
+		self.E_FunctionRep1.grid_forget()
+		self.E_FunctionRep2.grid_forget()
+		self.E_FunctionRep3.grid_forget()
+		self.B_Menu.grid_forget()
 
 	def Return(self):
 		if (self.x != 0):
 			self.SetToBox()
-			self.x -= 1 
+			self.x = int(self.debugArray[-1][0].x)
 			self.y = int(self.debugArray[-1][0].z)
 			self.pos.set("x : " + str(self.x) + "\ny : " + str(self.y))
 			del self.debugArray[-1]
@@ -346,6 +369,9 @@ class Interface:
 		if (indexY == None):
 			indexY = self.y
 
+		self.nbBox.set('Nombres de Boites : ' + str(self.box.Len()))
+		self.nbBoxRep.set('Boites configurés : ' + str(self.LenBoxRep()))
+		
 
 		try: # On essaye d'obtenir l'index :
 			self.chainageActuel = self.box[indexX][indexY]
@@ -464,7 +490,9 @@ class Interface:
 		return self.box[indexX][indexY].indice
 
 	def Debug(self):
-		for z in range(0,self.box.Len()):
+		print("\n_\n")
+		for z in range(0,self.box.Lenx()):
+			
 			print("----------### "+ str(z)+" ###----------")
 			try:
 				for i in range (0, len(self.box[z])):
@@ -490,6 +518,7 @@ class Interface:
 			except:
 				raise
 				print("Hum erreur !")
+		print("\n_\n")
 
 
 	def Delete(self):
@@ -651,8 +680,39 @@ class Interface:
 
 		menu_mike.mainloop()
 
+	def Menu(self):
+		self.Save()
+		self.ClearEditeur()
+		print("\n\n\n\n\n\n\n\n\n\n")
+		self.LoadMenu()
+
+	def LenBoxRep(self):
+		taille = 0
+		for x in range(0, self.box.Lenx()):
+			for y in range(0, len(self.box[x])):
+				if(len(self.box[x][y].Reponses) > 0):
+					taille += 1
+		return taille
+
+
 	def GoTo(self, newX, newY):
 		try:
+			temp = self.box[newX][newY]
 			print("Yolo")
 		except:
 			print("L'index n'existe pas !")
+		else:
+			print("Go to -> ")
+
+
+"""
+def Return(self):
+		if (self.x != 0):
+			self.SetToBox()
+			self.x = int(self.debugArray[-1][0].x)
+			self.y = int(self.debugArray[-1][0].z)
+			self.pos.set("x : " + str(self.x) + "\ny : " + str(self.y))
+			del self.debugArray[-1]
+			self.GetFromBox()
+			self.Debug()
+"""
