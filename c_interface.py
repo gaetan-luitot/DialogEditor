@@ -287,7 +287,6 @@ class Interface:
 			else :
 				listeFunction.append(False)
 		except:
-			raise
 			listeFunction.append(False)
 		try:
 			if (self.FunctionRep2.get() != ''):
@@ -295,7 +294,6 @@ class Interface:
 			else :
 				listeFunction.append(False)
 		except:
-			raise
 			listeFunction.append(False)
 		try:
 			if (self.FunctionRep3.get() != ''):
@@ -459,7 +457,6 @@ class Interface:
 			self.GetFromBox()
 			self.Debug()
 		except:
-			raise
 			print("E: Le ficher n'existe pas !")
 		
 
@@ -598,18 +595,24 @@ class Interface:
 		
 
 	def Jet(self, bouton):
-		listeTest = [self.Rep1.get(), self.Rep2.get(), self.Rep1.get()]
+		listeTest = [self.Rep1.get(), self.Rep2.get(), self.Rep3.get()]
+		
 		if (listeTest[bouton] != ''):
 			self.SetToBox()
 			self.Debug()
+
 			def Valider(bouton):
+				variableFunc = function2.get()
+
+				if (function2.get() == ''):
+					variableFunc = False
 				if(listeState.get() != '' and diff.get() != ''):
 					if (x2.get() == '' and z2.get() == ''):
-						self.box[self.x][self.y].Reponses[bouton].extend = Extension(listeState.get(), diff.get(), (self.x +1), self.box.GetIndice(self.x + 1))
+						self.box[self.x][self.y].Reponses[bouton].extend = Extension(listeState.get(), diff.get(), (self.x +1), self.box.GetIndice(self.x + 1), variableFunc)
 						self.box.Ajouter(Chainage(Chainage.d_texte, Chainage.d_Reponses, self.box.GetIndice(self.x +1)), self.x + 1)
 						menu_jet.destroy()
 					elif (x2.get() != '' and z2.get() != ''):
-						self.box[self.x][self.y].Reponses[bouton].extend = Extension(listeState.get(), diff.get(), x2.get(), z2.get())
+						self.box[self.x][self.y].Reponses[bouton].extend = Extension(listeState.get(), diff.get(), x2.get(), z2.get(), variableFunc)
 						menu_jet.destroy()
 
 			def Dejetyfication(bouton):
@@ -623,7 +626,7 @@ class Interface:
 			menu_jet = Toplevel(self.editor)
 			menu_jet['bg']='black' # On met le fond de couleur noir 
 			menu_jet.title("Configuration Jet") # On nomme la fenêtre 
-			menu_jet.geometry("200x100") # On définit une taille pour la fenêtre
+			menu_jet.geometry("300x100") # On définit une taille pour la fenêtre
 			menu_jet.resizable(0,0)
 			
 			# ListBox :
@@ -636,6 +639,8 @@ class Interface:
 			liste.grid(rowspan = 3, row = 0, column = 1, sticky = NE)
 
 			# StringVar : 
+			function2 = StringVar() 
+			function2.set('')
 			diff = StringVar() 
 			diff.set('')
 			x2 = StringVar() 
@@ -656,13 +661,16 @@ class Interface:
 			E_x2.grid(row = 0, column = 2)
 			E_z2 = Entry(menu_jet, textvariable = z2, bg = 'white', width = 3)
 			E_z2.grid(row = 0, column = 3)
-			labelListe = Label(menu_jet, textvariable = listeState, bg = 'white', width = 8)
+			E_Function2 = Entry(menu_jet, textvariable = function2, bg = 'white', width = 10)
+			E_Function2.grid(row = 0, column = 4, padx = 10)
+			labelListe = Label(menu_jet, textvariable = listeState, bg = 'white')
 			labelListe.grid(row = 4 , column = 1)
 
 			if( type(self.box[self.x][self.y].Reponses[bouton].extend) == type(Extension(None, None, None, None))): # Si le bouton est deja extend on load :
 				diff.set(str(self.box[self.x][self.y].Reponses[bouton].extend.difficult))
 				x2.set(self.box[self.x][self.y].Reponses[bouton].extend.pos2.x)
 				z2.set(self.box[self.x][self.y].Reponses[bouton].extend.pos2.z)
+				function2.set(self.box[self.x][self.y].Reponses[bouton].extend.function)
 				liste.activate(doc[str(self.box[self.x][self.y].Reponses[bouton].extend.carac)])
 				listeState.set(str(liste.get(ACTIVE)))
 			

@@ -16,9 +16,10 @@ class Reponse: # On définit notre classe, que l'on appelle "Reponse"
 		
 class Extension: # On définit notre classe, que l'on appelle "Reponse"
 
-	def __init__(self, carac, difficulté, x2, z2): # Constructeur :
+	def __init__(self, carac, difficulté, x2, z2, function = False): # Constructeur :
 		self.carac = carac # 0 : Physique | 1 : Mental | 2 : Sociale 
 		self.difficult = difficulté # La difficulté du jet de dés que le PJ devra battre
 		self.pos2 = Vecteur(x2, z2) # La position du Chainage qui répond à la réponse du PJ
+		self.function = function
 
 		

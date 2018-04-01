@@ -9,7 +9,7 @@
 # -> Commenter les classes
 
 # v 0.6
-# -> Fonction pour les pos 2
+# -> Fonction pour les pos 2 !!!!
 
 
 
