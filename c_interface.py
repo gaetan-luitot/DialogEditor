@@ -253,10 +253,13 @@ class Interface:
 		else:
 			self.SetToBox()
 			self.debugArray.append([Vecteur(self.x, self.y) ,str(Vecteur(self.x, self.y))])
-			self.x += 1 
+			self.x = self.chainageActuel.Reponses[nbButton].pos.x
 			self.pos.set("x : " + str(self.x) + "\ny : " + str(self.y))
 			print(self.chainageActuel.Reponses[nbButton].pos.z)
-			self.y = self.ZtoYrep(self.x -1, self.chainageActuel.Reponses[nbButton].pos.z)
+			if (self.x != 0):
+				self.y = self.ZtoYrep(self.x - 1, self.chainageActuel.Reponses[nbButton].pos.z)
+			else:
+				self.y = self.ZtoYrep(self.x, self.chainageActuel.Reponses[nbButton].pos.z)
 			self.pos.set("x : " + str(self.x) + "\ny : " + str(self.y))
 			self.GetFromBox()
 			self.Debug()
@@ -311,18 +314,13 @@ class Interface:
 						listeTemporaire.append(Reponse(self.texteRep1.get(), int(self.xRep1.get()), int(self.yRep1.get()), bool(self.hiden1.get()), listeExtend[0], listeFunction[0]))
 					else:
 						listeTemporaire.append(Reponse(self.texteRep1.get(), self.chainageActuel.Reponses[0].pos.x, self.chainageActuel.Reponses[0].pos.z, bool(self.hiden1.get()), listeExtend[0], listeFunction[0]))
-				else:
-					if (self.xRep1.get() != '' and self.yRep1.get() != ''):
-						listeTemporaire.append(Reponse(self.texteRep1.get(), int(self.xRep1.get()), int(self.yRep1.get()), bool(self.hiden1.get()), listeExtend[0], listeFunction[0]))
-					else:
-						listeTemporaire.append(Reponse(self.texteRep1.get(), (self.x +1), self.box.GetIndice(self.x + 1), bool(self.hiden1.get()), listeExtend[0], listeFunction[0]))
-						self.box.Ajouter(Chainage(Chainage.d_texte, Chainage.d_Reponses, self.box.GetIndice(self.x +1)), self.x + 1)
 			except:
 				if (self.xRep1.get() != '' and self.yRep1.get() != ''):
 					listeTemporaire.append(Reponse(self.texteRep1.get(), int(self.xRep1.get()),  int(self.yRep1.get()), bool(self.hiden1.get()), listeExtend[0], listeFunction[0]))
 				else:
 					listeTemporaire.append(Reponse(self.texteRep1.get(), (self.x +1), self.box.GetIndice(self.x + 1), bool(self.hiden1.get()), listeExtend[0], listeFunction[0]))
 					self.box.Ajouter(Chainage(Chainage.d_texte, Chainage.d_Reponses, self.box.GetIndice(self.x +1)), self.x + 1)
+
 
 		if self.texteRep2.get() != '':
 			try:
@@ -331,12 +329,6 @@ class Interface:
 						listeTemporaire.append(Reponse(self.texteRep2.get(), int(self.xRep2.get()), int(self.yRep2.get()), bool(self.hiden2.get()), listeExtend[1], listeFunction[1]))
 					else:
 						listeTemporaire.append(Reponse(self.texteRep2.get(), self.chainageActuel.Reponses[1].pos.x, self.chainageActuel.Reponses[1].pos.z, bool(self.hiden2.get()), listeExtend[1], listeFunction[1]))
-				else:
-					if (self.xRep2.get() != '' and self.yRep2.get() != ''):
-						listeTemporaire.append(Reponse(self.texteRep2.get(), int(self.xRep2.get()), int(self.yRep2.get()), bool(self.hiden2.get()), listeExtend[1], listeFunction[1]))
-					else:
-						listeTemporaire.append(Reponse(self.texteRep2.get(), (self.x +1), self.box.GetIndice(self.x + 1), bool(self.hiden2.get()), listeExtend[1], listeFunction[1]))
-						self.box.Ajouter(Chainage(Chainage.d_texte, Chainage.d_Reponses, self.box.GetIndice(self.x +1)), self.x + 1)
 			except:
 				if (self.xRep2.get() != '' and self.yRep2.get() != ''):
 					listeTemporaire.append(Reponse(self.texteRep2.get(), int(self.xRep2.get()),  int(self.yRep2.get()), bool(self.hiden2.get()), listeExtend[1], listeFunction[1]))
@@ -353,12 +345,6 @@ class Interface:
 						listeTemporaire.append(Reponse(self.texteRep3.get(), int(self.xRep3.get()), int(self.yRep3.get()), bool(self.hiden3.get()), listeExtend[2], listeFunction[2]))
 					else:
 						listeTemporaire.append(Reponse(self.texteRep3.get(), self.chainageActuel.Reponses[2].pos.x, self.chainageActuel.Reponses[2].pos.z, bool(self.hiden3.get()), listeExtend[2], listeFunction[2]))
-				else:
-					if (self.xRep3.get() != '' and self.yRep3.get() != ''):
-						listeTemporaire.append(Reponse(self.texteRep3.get(), int(self.xRep3.get()), int(self.yRep3.get()), bool(self.hiden3.get()), listeExtend[2], listeFunction[2]))
-					else:
-						listeTemporaire.append(Reponse(self.texteRep3.get(), (self.x +1), self.box.GetIndice(self.x + 1), bool(self.hiden3.get()), listeExtend[2], listeFunction[2]))
-						self.box.Ajouter(Chainage(Chainage.d_texte, Chainage.d_Reponses, self.box.GetIndice(self.x +1)), self.x + 1)
 			except:
 				if (self.xRep3.get() != '' and self.yRep3.get() != ''):
 					listeTemporaire.append(Reponse(self.texteRep3.get(), int(self.xRep3.get()),  int(self.yRep3.get()), bool(self.hiden3.get()), listeExtend[2], listeFunction[2]))
@@ -711,6 +697,9 @@ class Interface:
 	def Menu(self):
 		self.Save()
 		self.ClearEditeur()
+		self.debugArray = []
+		self.x = 0
+		self.y = 0
 		print("\n\n\n\n\n\n\n\n\n\n")
 		self.LoadMenu()
 
