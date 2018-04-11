@@ -69,19 +69,31 @@ class Boite:
 	def GetYndex(self, index):
 		return int(len(self._tableau[index]) -1)
 
-	def GetIndice(self, indeX):
+	def GetIndice(self, indeX): 
+		listeTemp = []
 		try:
 			if(str(type(self._tableau[indeX][len(self._tableau[indeX]) -1])) == "<class 'c_chainage.Chainage'>"):
-				for i in range(0, len(self._tableau[indeX])):
-					# print("i :" + str(i) + " - " + "indice : " + str(self._tableau[indeX][i].indice))
+				for i in range(0, len(self._tableau[indeX])): # Refaire cette boucle, tu veux qu'elle te renvoe quoi ?
+					print("i :" + str(i) + " - " + "indice : " + str(self._tableau[indeX][i].indice))
 					if self._tableau[indeX][i].indice != i:
 						# print("return : " + str(i))
+						print("Return ---> " + str(i) + " ou plutôt ça : " + str(self._tableau[indeX][i].indice))
 						return i
+				for i in range(0, len(self._tableau[indeX])):
+					listeTemp.append(int(self._tableau[indeX][i].indice))
+
+
+				for i in range(0, len(self._tableau[indeX])):
+					if (listeTemp.count(i) == 0):
+						return i
+
 				return (self._tableau[indeX][len(self._tableau[indeX]) -1].indice + 1)
 			else:
 				print("E: L'index \"[" + str(indeX) + "]" + "[" + str(len(self._tableau[indeX]) -1) + "]" +"\" de la boite ne contient pas un Chainage!")
+				print("Erreur")
 				return -1
 		except: # Si c'est le premier :
+			print("Return ---> Fucking 0")
 			return 0
 
 	def Lenx(self):

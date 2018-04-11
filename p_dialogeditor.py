@@ -6,9 +6,6 @@
 #
 # v 0.7
 # -> Commenter les classes
-# -> Faire qu'on puisse modifier les index apres que la réponse soit créer
-# -> Lorsqu'on supprime une case et qu'on en recréer une l'index n'est pas bon
-# -> Mauvaise index afficher dans le debug
 
 
 from c_interface import *

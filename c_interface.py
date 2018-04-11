@@ -319,7 +319,7 @@ class Interface:
 					listeTemporaire.append(Reponse(self.texteRep1.get(), int(self.xRep1.get()),  int(self.yRep1.get()), bool(self.hiden1.get()), listeExtend[0], listeFunction[0]))
 				else:
 					listeTemporaire.append(Reponse(self.texteRep1.get(), (self.x +1), self.box.GetIndice(self.x + 1), bool(self.hiden1.get()), listeExtend[0], listeFunction[0]))
-					self.box.Ajouter(Chainage(Chainage.d_texte, Chainage.d_Reponses, self.box.GetIndice(self.x +1)), self.x + 1)
+					self.box.Ajouter(Chainage(Chainage.d_texte, Chainage.d_Reponses, self.box.GetIndice(self.x +1), Vecteur(self.x, self.y)), self.x + 1)
 
 
 		if self.texteRep2.get() != '':
@@ -334,7 +334,7 @@ class Interface:
 					listeTemporaire.append(Reponse(self.texteRep2.get(), int(self.xRep2.get()),  int(self.yRep2.get()), bool(self.hiden2.get()), listeExtend[1], listeFunction[1]))
 				else:
 					listeTemporaire.append(Reponse(self.texteRep2.get(), (self.x +1), self.box.GetIndice(self.x + 1), bool(self.hiden2.get()), listeExtend[1], listeFunction[1]))
-					self.box.Ajouter(Chainage(Chainage.d_texte, Chainage.d_Reponses, self.box.GetIndice(self.x +1)), self.x + 1)
+					self.box.Ajouter(Chainage(Chainage.d_texte, Chainage.d_Reponses, self.box.GetIndice(self.x +1), Vecteur(self.x, self.y)), self.x + 1)
 
 
 
@@ -350,7 +350,7 @@ class Interface:
 					listeTemporaire.append(Reponse(self.texteRep3.get(), int(self.xRep3.get()),  int(self.yRep3.get()), bool(self.hiden3.get()), listeExtend[2], listeFunction[2]))
 				else:
 					listeTemporaire.append(Reponse(self.texteRep3.get(), (self.x +1), self.box.GetIndice(self.x + 1), bool(self.hiden3.get()), listeExtend[2], listeFunction[2]))
-					self.box.Ajouter(Chainage(Chainage.d_texte, Chainage.d_Reponses, self.box.GetIndice(self.x +1)), self.x + 1)
+					self.box.Ajouter(Chainage(Chainage.d_texte, Chainage.d_Reponses, self.box.GetIndice(self.x +1), Vecteur(self.x, self.y)), self.x + 1)
 
 
 		self.chainageActuel.texte = self.texteDialogue.get()
@@ -371,7 +371,7 @@ class Interface:
 		try: # On essaye d'obtenir l'index :
 			self.chainageActuel = self.box[indexX][indexY]
 		except: # Si il n'existe pas on le créer:
-			self.box.Ajouter(Chainage(Chainage.d_texte, Chainage.d_Reponses, self.box.GetIndice(indexX)), indexX)
+			self.box.Ajouter(Chainage(Chainage.d_texte, Chainage.d_Reponses, self.box.GetIndice(indexX), Vecteur(self.x, self.y)), indexX)
 			self.chainageActuel = self.box[indexX][indexY]
 		finally: # Puis dans tout les cas on actualise les widgets :
 			self.texteDialogue.set(self.chainageActuel.texte)
@@ -517,18 +517,18 @@ class Interface:
 
 
 	def Delete(self):
-		if (len(self.box[self.x][self.y].Reponses) != 0):
+		if self.x != 0:
+			if (len(self.box[self.x][self.y].Reponses) != 0):
+				self.DeleteAllWays() # On supprime les sous chemins
 			repToDel = 0
 			variableTemporaire = self.chainageActuel.indice
 			boxToDel = [self.x, self.y]
-			self.DeleteAllWays() # On supprime les sous chemins
-			if self.x != 0:
-				self.x -= 1
-				self.y = int(self.debugArray[-1][0].z)
-				self.pos.set("x : " + str(self.x) + "\ny : " + str(self.y))
-				del self.debugArray[-1]
-	  		
-
+	
+			self.x = self.box[boxToDel[0]][boxToDel[1]].pos.x
+			self.y = self.box[boxToDel[0]][boxToDel[1]].pos.z
+			self.pos.set("x : " + str(self.x) + "\ny : " + str(self.y))
+			del self.debugArray[-1]
+	  	
 			for i in range(0, len(self.box[self.x][self.y].Reponses)):
 				if(self.box[self.x][self.y].Reponses[i].pos.z == variableTemporaire):
 					repToDel = i
