@@ -8,8 +8,26 @@ class Vecteur: # On définit notre classe, que l'on appelle "Vecteur"
 		self.x = x  
 		self.z = z
 
-	def __repr__(self): # Cette fonction est appellée lorsque 
+		""" Cette fonction est apellée lorsqu'on écrit par exemple :
+		|vec = Vecteur(3, 4)			<---- ici
+		"""
+
+
+
+	def __repr__(self): # Cette fonction sert à retourner la position du vecteur sous forme de str
 		return str("["+ str(self.x)+"] [" + str(self.z) + "]")
 
-	def get(self):
+		""" Cette fonction est apellée lorsqu'on écrit par exemple :
+		|vec = Vecteur(3, 4)
+		|print(vec) 					<---- ici
+		"""
+
+
+
+	def get(self): # Cette fonction sert à retourner la position du vecteur sous forme de str
 		return str("["+ str(self.x)+"] [" + str(self.z) + "]")
+
+		""" Cette fonction est apellée lorsqu'on écrit par exemple :
+		|vec = Vecteur(3, 4)
+		|print(vec.get()) 					<---- ici
+		"""
