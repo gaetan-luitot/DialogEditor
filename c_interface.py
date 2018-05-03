@@ -6,12 +6,14 @@ from c_boite import *
 from c_chainage import *
 from c_reponse import *
 from tkinter.messagebox import *
+from sys import platform
 
-
-# TODO :
-# - Gestion des boites dans box
-# - Vérifier lors de la création d'une nouvelle scène qu'il n'en n'existe pas déjà une, si c'est le cas avertire que celle ci 
-#		va être supprimée : "Attention le fichier existe déjà et va être supprimé, êtes vous sur de vouloir continuer : oui / non"
+"""
+if platform == "linux" or platform == "linux2":
+    # linux
+elif platform == "darwin":
+    # OS X
+elif platform == "win32":"""
 
 
 class Interface:
@@ -23,10 +25,11 @@ class Interface:
 		self.editor = Tk() # On créer une fenêtre "editor"
 		self.editor['bg']='black' # On met le fond de couleur noir 
 		self.editor.title("Editeur de Scène") # On nomme la fenêtre 
-		self.editor.geometry("640x360") # On définit une taille pour la fenêtre
+		self.editor.geometry("640x460") # On définit une taille pour la fenêtre
 		self.editor.resizable(0,0) # On fixe la taille pour qu'on ne puisse pas la modifier
 
 		# Variables :
+		self.lenghtOS = 520
 		self.debugArray = []
 		self.box = Boite("default")
 		self.nbBox = StringVar()
@@ -70,14 +73,14 @@ class Interface:
 		self.X = PanedWindow(self.editor, orient = HORIZONTAL)
 		self.Y = PanedWindow(self.editor, orient = HORIZONTAL)
 		# Canvas :
-		self.Fond = Canvas(self.editor, bg = 'black', width= 640, height = 360)
+		self.Fond = Canvas(self.editor, bg = 'black', width= 640, height = 460)
 		# LabelFrame :
-		self.X.add(Label(self.editor, text = '', bg = 'black', anchor = N, width = 80))
-		self.Y.add(Label(self.editor, text = '', bg = 'black', anchor = N, width = 2, height = 22))
+		self.X.add(Label(self.editor, text = '', bg = 'black', anchor = NW, width = 91))
+		self.Y.add(Label(self.editor, text = '', bg = 'black', anchor = NW, width = 2, height = 31))
 		# On affiche tout :
-		self.X.grid(columnspan = 640,sticky = W)
-		self.Y.grid(rowspan = 360,sticky = W)
-		self.Fond.grid(rowspan = 360, columnspan = 640, row = 0, column = 0, sticky = NW)
+		self.X.grid(columnspan = 640, rowspan = 460, row = 0, column = 0, sticky = NW)
+		self.Y.grid(rowspan = 460, columnspan = 640, row = 0, column = 0, sticky = NW)
+		self.Fond.grid(rowspan = 460, columnspan = 640, row = 0, column = 0, sticky = NW)
 
 	def LoadMenu(self):
 		print("I: Chargement du menu")
@@ -92,10 +95,10 @@ class Interface:
 
 	def PackMenu(self):
 		# Label :
-		self.Fichier.grid(columnspan = 640, rowspan = 360, row = 100, column = 150, sticky = NW)
+		self.Fichier.grid(columnspan = 640, rowspan = 460, row = 100, column = 150, sticky = NW)
 		# Button :
-		self.New.grid(columnspan = 640, rowspan = 360, row = 150, column = 150, sticky = NW)
-		self.Load.grid(columnspan = 640, rowspan = 360, row = 150, column = 225, sticky = NW)
+		self.New.grid(columnspan = 640, rowspan = 460, row = 150, column = 150, sticky = NW)
+		self.Load.grid(columnspan = 640, rowspan = 460, row = 150, column = 225, sticky = NW)
 
 	def ClearMenu(self):
 		print("I: Déchargement du menu")
@@ -108,23 +111,23 @@ class Interface:
 		# LabelFrame :
 		self.TopHelp = Label(self.editor, textvariable = self.nbBox, bg = 'white', width = 20) # Help : Nombre de chainages crées
 		self.TopHelpTwo = Label(self.editor, textvariable = self.nbBoxRep, bg = 'white', width = 20) # Help : [à définir]
-		self.TexteLabel = Label(self.editor, textvariable = self.texteDialogue, bg = 'white', width = 60, height = 6, wraplength = 480, anchor = NW) # Affichage du texte écrit
+		self.TexteLabel = Label(self.editor, textvariable = self.texteDialogue, bg = 'white', width = 75, height = 10, wraplength = self.lenghtOS, anchor = NW) # Affichage du texte écrit
 		self.InfoPosVar = Label(self.editor, textvariable = self.pos, bg = 'white', width = 5, height = 2) # Help : Position actuel
 
 		# Entry :
-		self.Texte = Entry(self.editor, textvariable = self.texteDialogue, width = 60) # Texte du PNJ 
-		self.Rep1 = Entry(self.editor, textvariable = self.texteRep1, width = 70) # Réponse 1 du PJ
-		self.Rep2 = Entry(self.editor, textvariable = self.texteRep2, width = 70) # Réponse 2 du PJ
-		self.Rep3 = Entry(self.editor, textvariable = self.texteRep3, width = 70) # Réponse 3 du PJ
+		self.Texte = Entry(self.editor, textvariable = self.texteDialogue, width = 88) # Texte du PNJ 
+		self.Rep1 = Entry(self.editor, textvariable = self.texteRep1, width = 104) # Réponse 1 du PJ
+		self.Rep2 = Entry(self.editor, textvariable = self.texteRep2, width = 104) # Réponse 2 du PJ
+		self.Rep3 = Entry(self.editor, textvariable = self.texteRep3, width = 104) # Réponse 3 du PJ
 		self.EntryxRep1 = Entry(self.editor, textvariable = self.xRep1, width = 2)
 		self.EntryyRep1 = Entry(self.editor, textvariable = self.yRep1, width = 2)
 		self.EntryxRep2 = Entry(self.editor, textvariable = self.xRep2, width = 2)
 		self.EntryyRep2 = Entry(self.editor, textvariable = self.yRep2, width = 2)
 		self.EntryxRep3 = Entry(self.editor, textvariable = self.xRep3, width = 2)
 		self.EntryyRep3 = Entry(self.editor, textvariable = self.yRep3, width = 2)
-		self.E_FunctionRep1 = Entry(self.editor, textvariable = self.FunctionRep1, width = 10)
-		self.E_FunctionRep2 = Entry(self.editor, textvariable = self.FunctionRep2, width = 10)
-		self.E_FunctionRep3 = Entry(self.editor, textvariable = self.FunctionRep3, width = 10)
+		self.E_FunctionRep1 = Entry(self.editor, textvariable = self.FunctionRep1, width = 14)
+		self.E_FunctionRep2 = Entry(self.editor, textvariable = self.FunctionRep2, width = 14)
+		self.E_FunctionRep3 = Entry(self.editor, textvariable = self.FunctionRep3, width = 14)
 		self.E_XGoto = Entry(self.editor, textvariable = self.XGoTo, width = 2)
 		self.E_YGoto = Entry(self.editor, textvariable = self.YGoTo, width = 2)
 
@@ -135,9 +138,9 @@ class Interface:
 		self.B_Debug = Button(self.editor, text = "Debug", command = self.Debug) # Bouton afficher à quoi ressemble la boite
 		self.B_Return = Button(self.editor, text = "Return", command = self.Return) # Bouton de navigation à travers la boite : retourner en arrière
 		self.B_Mike = Button(self.editor, text = "M", command = self.Mike)
-		self.B_Jet1 = Button(self.editor, text = "Jet", command = lambda: self.Jet(0), width = 1)  
-		self.B_Jet2 = Button(self.editor, text = "Jet", command = lambda: self.Jet(1), width = 1)  
-		self.B_Jet3 = Button(self.editor, text = "Jet", command = lambda: self.Jet(2), width = 1)  
+		self.B_Jet1 = Button(self.editor, text = "Jet", command = lambda: self.Jet(0), width = 2)  
+		self.B_Jet2 = Button(self.editor, text = "Jet", command = lambda: self.Jet(1), width = 2)  
+		self.B_Jet3 = Button(self.editor, text = "Jet", command = lambda: self.Jet(2), width = 2)  
 		self.ButtonRep1 = Button(self.editor, text = "Réponse 1", command = lambda: self.ApplyCurrent(0), width = 13) # Btn navigation : aller vers chainage suivant
 		self.ButtonRep2 = Button(self.editor, text = "Réponse 2", command = lambda: self.ApplyCurrent(1), width = 13) # Btn navigation : aller vers chainage suivant
 		self.ButtonRep3 = Button(self.editor, text = "Réponse 3", command = lambda: self.ApplyCurrent(2), width = 13) # Btn navigation : aller vers chainage suivant
@@ -153,49 +156,49 @@ class Interface:
 		
 	def PackEditeur(self): # Update de tout les Widgets
 		# UI help :
-		self.TopHelp.grid(columnspan = 640, rowspan = 360, row = 0, column = 210, sticky = NW)
-		self.TopHelpTwo.grid(columnspan = 640, rowspan = 360, row = 1, column = 210, sticky = NW)
-		self.InfoPosVar.grid(columnspan = 640, rowspan = 360, row = 100, column = 0, sticky = NW)
+		self.TopHelp.grid(columnspan = 640, rowspan = 460, row = 0, column = 210, sticky = NW)
+		self.TopHelpTwo.grid(columnspan = 640, rowspan = 460, row = 21, column = 210, sticky = NW)
+		self.InfoPosVar.grid(columnspan = 640, rowspan = 460, row = 100, column = 0, sticky = NW)
 
 		# UI Other:
-		self.B_Save.grid(columnspan = 640, rowspan = 360, row = 0, column = 575, sticky = NW)
-		self.B_Return.grid(columnspan = 640, rowspan = 360, row = 0, column = 0, sticky = NW)
-		self.B_Debug.grid(columnspan = 640, rowspan = 360, row = 20, column = 565, sticky = NW)
-		self.B_Delete.grid(columnspan = 640, rowspan = 360, row = 20, column = 0, sticky = NW)
+		self.B_Save.grid(columnspan = 640, rowspan = 460, row = 0, column = 600, sticky = NW)
+		self.B_Return.grid(columnspan = 640, rowspan = 460, row = 0, column = 0, sticky = NW)
+		self.B_Debug.grid(columnspan = 640, rowspan = 460, row = 26, column = 589, sticky = NW)
+		self.B_Delete.grid(columnspan = 640, rowspan = 460, row = 26, column = 0, sticky = NW)
+		self.B_Mike.grid(columnspan = 640, rowspan = 460, row = 100, column = 600, sticky = NW)
 
 		# Texte :
-		self.Texte.grid(columnspan = 640,row = 150, column = 64, sticky = NW)
-		self.TexteLabel.grid(columnspan = 640, rowspan = 360,row = 40, column = 65, sticky = NW)
+		self.Texte.grid(columnspan = 640, rowspan = 460, row = 210, column = 55, sticky = NW)
+		self.TexteLabel.grid(columnspan = 640, rowspan = 460, row = 56, column = 55, sticky = NW)
 
 		# widgets "Button" pour les Réponses :
-		self.ButtonRep1.grid(columnspan = 640, rowspan = 360, row = 160, column = 0, sticky = NW)
-		self.ButtonRep2.grid(columnspan = 640, rowspan = 360, row = 226, column = 0, sticky = NW)
-		self.ButtonRep3.grid(columnspan = 640, rowspan = 360, row = 291, column = 0, sticky = NW)
-		self.B_Mike.grid(columnspan = 640, rowspan = 360, row = 100, column = 580, sticky = NW)
-		self.B_Jet1.grid(columnspan = 640, rowspan = 360, row = 160, column = 185, sticky = NW)
-		self.B_Jet2.grid(columnspan = 640, rowspan = 360, row = 226, column = 185, sticky = NW)
-		self.B_Jet3.grid(columnspan = 640, rowspan = 360, row = 291, column = 185, sticky = NW)
-		self.B_Menu.grid(columnspan = 640, rowspan = 360, row = 0, column = 75, sticky = NW)
-		self.B_Goto.grid(columnspan = 640, rowspan = 360, row = 0, column = 450, sticky = NW)
+		self.ButtonRep1.grid(columnspan = 640, rowspan = 460, row = 260, column = 0, sticky = NW)
+		self.ButtonRep2.grid(columnspan = 640, rowspan = 460, row = 326, column = 0, sticky = NW)
+		self.ButtonRep3.grid(columnspan = 640, rowspan = 460, row = 391, column = 0, sticky = NW)
+		self.B_Jet1.grid(columnspan = 640, rowspan = 460, row = 260, column = 210, sticky = NW)
+		self.B_Jet2.grid(columnspan = 640, rowspan = 460, row = 326, column = 210, sticky = NW)
+		self.B_Jet3.grid(columnspan = 640, rowspan = 460, row = 391, column = 210, sticky = NW)
+		self.B_Menu.grid(columnspan = 640, rowspan = 460, row = 0, column = 75, sticky = NW)
+		self.B_Goto.grid(columnspan = 640, rowspan = 460, row = 0, column = 450, sticky = NW)
 		# CheckBox Réponses : 
-		self.checkRep1.grid(columnspan = 640, rowspan = 360, row = 165, column = 235, sticky = NW)
-		self.checkRep2.grid(columnspan = 640, rowspan = 360, row = 231, column = 235, sticky = NW)
-		self.checkRep3.grid(columnspan = 640, rowspan = 360, row = 296, column = 235, sticky = NW)
+		self.checkRep1.grid(columnspan = 640, rowspan = 460, row = 260, column = 280, sticky = NW)
+		self.checkRep2.grid(columnspan = 640, rowspan = 460, row = 326, column = 280, sticky = NW)
+		self.checkRep3.grid(columnspan = 640, rowspan = 460, row = 391, column = 280, sticky = NW)
 		# Entry Réponses :
-		self.Rep1.grid(columnspan = 640, rowspan = 360, row = 197, column = 30, sticky = NW)
-		self.Rep2.grid(columnspan = 640, rowspan = 360, row = 263, column = 30, sticky = NW)
-		self.Rep3.grid(columnspan = 640, rowspan = 360, row = 328, column = 30, sticky = NW)
-		self.EntryxRep1.grid(columnspan = 640, rowspan = 360, row = 165, column = 120, sticky = NW)
-		self.EntryyRep1.grid(columnspan = 640, rowspan = 360, row = 165, column = 150, sticky = NW)
-		self.EntryxRep2.grid(columnspan = 640, rowspan = 360, row = 231, column = 120, sticky = NW)
-		self.EntryyRep2.grid(columnspan = 640, rowspan = 360, row = 231, column = 150, sticky = NW)
-		self.EntryxRep3.grid(columnspan = 640, rowspan = 360, row = 296, column = 120, sticky = NW)
-		self.EntryyRep3.grid(columnspan = 640, rowspan = 360, row = 296, column = 150, sticky = NW)
-		self.E_FunctionRep1.grid(columnspan = 640, rowspan = 360, row = 165, column = 330, sticky = NW)
-		self.E_FunctionRep2.grid(columnspan = 640, rowspan = 360, row = 231, column = 330, sticky = NW)
-		self.E_FunctionRep3.grid(columnspan = 640, rowspan = 360, row = 296, column = 330, sticky = NW)
-		self.E_XGoto.grid(columnspan = 640, rowspan = 360, row = 12, column = 450, sticky = NW)
-		self.E_YGoto.grid(columnspan = 640, rowspan = 360, row = 12, column = 480, sticky = NW)
+		self.Rep1.grid(columnspan = 640, rowspan = 460, row = 287, column = 10, sticky = NW)
+		self.Rep2.grid(columnspan = 640, rowspan = 460, row = 353, column = 10, sticky = NW)
+		self.Rep3.grid(columnspan = 640, rowspan = 460, row = 418, column = 10, sticky = NW)
+		self.EntryxRep1.grid(columnspan = 640, rowspan = 460, row = 265, column = 120, sticky = NW)
+		self.EntryyRep1.grid(columnspan = 640, rowspan = 460, row = 265, column = 150, sticky = NW)
+		self.EntryxRep2.grid(columnspan = 640, rowspan = 460, row = 331, column = 120, sticky = NW)
+		self.EntryyRep2.grid(columnspan = 640, rowspan = 460, row = 331, column = 150, sticky = NW)
+		self.EntryxRep3.grid(columnspan = 640, rowspan = 460, row = 396, column = 120, sticky = NW)
+		self.EntryyRep3.grid(columnspan = 640, rowspan = 460, row = 396, column = 150, sticky = NW)
+		self.E_FunctionRep1.grid(columnspan = 640, rowspan = 460, row = 263, column = 400, sticky = NW)
+		self.E_FunctionRep2.grid(columnspan = 640, rowspan = 460, row = 329, column = 400, sticky = NW)
+		self.E_FunctionRep3.grid(columnspan = 640, rowspan = 460, row = 394, column = 400, sticky = NW)
+		self.E_XGoto.grid(columnspan = 640, rowspan = 460, row = 32, column = 442, sticky = NW)
+		self.E_YGoto.grid(columnspan = 640, rowspan = 460, row = 32, column = 472, sticky = NW)
 
 	def ClearEditeur(self):
 		print("I: Déchargement de l'interface d'éditions")
@@ -243,7 +246,6 @@ class Interface:
 			self.pos.set("x : " + str(self.x) + "\ny : " + str(self.y))
 			del self.debugArray[-1]
 			self.GetFromBox()
-			self.Debug()
 
 
 	def ApplyCurrent(self, nbButton): # On ajoute à notre tableau box le chainage que l'on vient de créer
@@ -262,7 +264,6 @@ class Interface:
 				self.y = self.ZtoYrep(self.x, self.chainageActuel.Reponses[nbButton].pos.z)
 			self.pos.set("x : " + str(self.x) + "\ny : " + str(self.y))
 			self.GetFromBox()
-			self.Debug()
 
 	def SetToBox(self): # On assignent les infos rentrés dans les Entrys à notre variables chainageActuel
 		listeTemporaire = []
@@ -441,7 +442,6 @@ class Interface:
 			self.ClearMenu()
 			self.LoadEditeur()
 			self.GetFromBox()
-			self.Debug()
 		except:
 			print("E: Le ficher n'existe pas !")
 		
@@ -585,7 +585,6 @@ class Interface:
 		
 		if (listeTest[bouton] != ''):
 			self.SetToBox()
-			self.Debug()
 
 			def Valider(bouton):
 				variableFunc = function2.get()
