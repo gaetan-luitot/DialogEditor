@@ -11,6 +11,8 @@ from c_reponse import Reponse # On importe notre classe "Reponse"
 
 class Chainage: # On définit notre classe, que l'on appelle "Chainage" :
 
+	# Les variables "static", sont des variables constante utilisable partout et sans créer d'objet il suffit de faire ceci pour l'obtenir :
+	# |a = Chainage.nomVariable
 	d_texte = "[Texte]" # Variable static qui contient le texte par défaut
 	d_Reponses = [] # tableau static qui contient les réponses par défaut
 

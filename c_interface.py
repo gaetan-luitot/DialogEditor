@@ -1,4 +1,7 @@
-# Classe "Interface", cette classe va gérer l'interface graphique :
+""" 
+Cet classe, Interface, va être la classe qui va gérer la création d'une interface graphique pour configurer notre Boite,
+c'est grâce à elle que un utilisateur va pouvoir créer une scène, donc sont travail est de communiqué entre l'utilisateur et la scène en création.
+"""
 
 import sys
 from tkinter import *
@@ -16,7 +19,7 @@ elif platform == "darwin":
 elif platform == "win32":"""
 
 
-class Interface:
+class Interface: # On définit notre classe, que l'on appelle "Interface" :
 
 	def __init__(self): # Constructeur :
 		try: self.color = sys.stdout.shell
@@ -63,7 +66,7 @@ class Interface:
 		
 		self.Define() # On créer notre fenêtre de base
 		self.LoadMenu() # On charge le menu au début
-		self.Start() # On commence la boucle 
+		self.Start() # On commence une boucle Tkinter  
 
 	def Start(self): # start mainloop
 		self.editor.mainloop()
@@ -257,7 +260,6 @@ class Interface:
 			self.debugArray.append([Vecteur(self.x, self.y) ,str(Vecteur(self.x, self.y))])
 			self.x = self.chainageActuel.Reponses[nbButton].pos.x
 			self.pos.set("x : " + str(self.x) + "\ny : " + str(self.y))
-			print(self.chainageActuel.Reponses[nbButton].pos.z)
 			if (self.x != 0):
 				self.y = self.ZtoYrep(self.x - 1, self.chainageActuel.Reponses[nbButton].pos.z)
 			else:
@@ -511,8 +513,8 @@ class Interface:
 								print("        " + str(self.box[z][i].Reponses[x].pos) + " " + str(self.box[z][i].Reponses[x].hiden))
 							
 			except:
-				raise
-				print("Hum erreur !")
+				print("Hum Erreur !")
+				
 		print("\n_\n")
 
 
